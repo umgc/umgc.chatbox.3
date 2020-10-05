@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerName": {
+            "value": "municipal-permit-chabot"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "imageType": {
+            "value": "Public"
+        },
+        "imageName": {
+            "value": "docker.io/umgccaps/municipal-permit-chabot.app:latest"
+        },
+        "osType": {
+            "value": "Linux"
+        },
+        "numberCpuCores": {
+            "value": "2"
+        },
+        "memory": {
+            "value": "6"
+        },
+        "restartPolicy": {
+            "value": "OnFailure"
+        },
+        "environmentVariables": {
+            "value": [
+                {
+                    "name": "Test",
+                    "value": "test"
+                }
+            ]
+        },
+        "ipAddressType": {
+            "value": "Public"
+        },
+        "ports": {
+            "value": [
+                {
+                    "port": "80",
+                    "protocol": "TCP"
+                },
+                {
+                    "port": "5000",
+                    "protocol": "TCP"
+                }
+            ]
+        },
+        "dnsNameLabel": {
+            "value": "dev-municipal-permit-chabot"
+        }
+    }
+}
