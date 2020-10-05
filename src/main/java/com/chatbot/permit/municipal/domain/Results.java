@@ -6,13 +6,13 @@ import java.util.List;
 
 @JsonIgnoreProperties
 public class Results {
-    private List<AddressResult> results;
+  private List<AddressResult> results;
 
-    public List<AddressResult> getResults() {
-        return results;
-    }
+  public List<AddressResult> getResults() {
+    return results;
+  }
 
-    public void setResults(List<AddressResult> results) {
-        this.results = results;
-    }
+  public void setResults(List<AddressResult> results) {
+    this.results = results;
+  }
 }
