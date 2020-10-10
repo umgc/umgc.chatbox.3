@@ -18,6 +18,9 @@
 		<java.version>1.8</java.version>
 		<azure.version>2.3.5</azure.version>
 		<testcontainers.version>1.14.3</testcontainers.version>
+		<sonar.projectKey>umgccapstone_umgc.chatbox.3</sonar.projectKey>
+  		<sonar.organization>umgc-capstone</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<dependencies>
@@ -110,6 +113,14 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>		
 	</build>
 
 </project>
