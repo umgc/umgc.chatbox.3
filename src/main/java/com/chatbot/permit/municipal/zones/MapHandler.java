@@ -39,27 +39,27 @@ public class MapHandler {
   MapsRepository mapsRepository;
 
   public MapHandler() {
-	try {
-		this.mapZones = this.convertAllZonesToPolygon();
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	// this.parseKML(); //uncomment this to import file on start
+    try {
+      this.mapZones = this.convertAllZonesToPolygon();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    // this.parseKML(); //uncomment this to import file on start
   }
 
   public MapHandler(PolygonsRepository polygonsRepository, MapsRepository mapsRepository) {
-	  this.polygonsRepository = polygonsRepository;
-	  this.mapsRepository = mapsRepository;
-	  try {
-		this.mapZones = this.convertAllZonesToPolygon();
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	// this.parseKML(); //uncomment this to import file on start
+    this.polygonsRepository = polygonsRepository;
+    this.mapsRepository = mapsRepository;
+    try {
+      this.mapZones = this.convertAllZonesToPolygon();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    // this.parseKML(); //uncomment this to import file on start
   }
-  
+
   /**
    * This function returns a list of the custom ZonePolygon objects that are in the DB.
    * 
@@ -229,7 +229,7 @@ public class MapHandler {
       list.add(zonePolygon);
     }
 
-    return  list;
+    return list;
   }
 
   /**
@@ -240,7 +240,7 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneCodeForID(int zoneID) throws SQLException {
-    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_CODE();
     }
@@ -256,7 +256,7 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneCode2ForID(int zoneID) throws SQLException {
-    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_CODE_2();
     }
@@ -272,7 +272,7 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneCode3ForID(int zoneID) throws SQLException {
-    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_CODE_3();
     }
@@ -288,7 +288,7 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneNoteForID(int zoneID) throws SQLException {
-    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_NOTE();
     }

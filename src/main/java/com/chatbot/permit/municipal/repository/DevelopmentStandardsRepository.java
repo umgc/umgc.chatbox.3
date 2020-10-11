@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DevelopmentStandardsRepository extends JpaRepository<DevelopmentStandards, Integer> {
+public interface DevelopmentStandardsRepository
+    extends JpaRepository<DevelopmentStandards, Integer> {
 }
