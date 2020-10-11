@@ -4,24 +4,27 @@
  */
 package com.chatbot.permit.municipal.zones;
 
-import java.awt.Polygon;
+import com.chatbot.permit.municipal.model.Maps;
+import com.chatbot.permit.municipal.model.Polygons;
+import com.chatbot.permit.municipal.repository.MapsRepository;
+import com.chatbot.permit.municipal.repository.PolygonsRepository;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import javax.swing.JFileChooser;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
 
 
 
@@ -30,24 +33,33 @@ import org.w3c.dom.Element;
  * @author bmurray
  */
 public class MapHandler {
-  private final Connection myConn;
   private static List<ZonePolygon> mapZones;
 
+  PolygonsRepository polygonsRepository;
+  MapsRepository mapsRepository;
 
-
-  public MapHandler() throws Exception {
-    String dbName = "TEST";
-    String dbUser = "test";
-    String dbPwd = "test";
-    String dbURL = "jdbc:derby://localhost:1527/kmlFile";
-
-    myConn = DriverManager.getConnection(dbURL, dbUser, dbPwd);
-    // this.parseKML(); //uncomment this to import file on start
-    // System.out.println("DB connection successful to: " + dbURL);
-    mapZones = this.convertAllZonesToPolygon();
-
+  public MapHandler() {
+	try {
+		this.mapZones = this.convertAllZonesToPolygon();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	// this.parseKML(); //uncomment this to import file on start
   }
 
+  public MapHandler(PolygonsRepository polygonsRepository, MapsRepository mapsRepository) {
+	  this.polygonsRepository = polygonsRepository;
+	  this.mapsRepository = mapsRepository;
+	  try {
+		this.mapZones = this.convertAllZonesToPolygon();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	// this.parseKML(); //uncomment this to import file on start
+  }
+  
   /**
    * This function returns a list of the custom ZonePolygon objects that are in the DB.
    * 
@@ -162,16 +174,7 @@ public class MapHandler {
    * @throws Exception
    */
   public void addZone(int uniq_Zone_id, String zone) throws Exception {
-    Statement myStmt = null;
-    ResultSet myRs = null;
-    try {
-      myStmt = myConn.createStatement();
-      String sql1 = "INSERT INTO polygons (POLYGON_ID, ZONE_CODE, ZONE_NOTE) " + "VALUES("
-          + uniq_Zone_id + ", '" + zone + "', '" + zone + "')";
-      myStmt.executeUpdate(sql1);
-    } finally {
-      close(myStmt, myRs);
-    }
+    polygonsRepository.save(new Polygons(uniq_Zone_id, zone, zone));
   }
 
   /**
@@ -183,28 +186,16 @@ public class MapHandler {
    * @throws Exception
    */
   public void addZoneCord(int uniq_Zone_id, String lat, String lon) throws Exception {
-    Statement myStmt = null;
-    ResultSet myRs = null;
-    try {
-      myStmt = myConn.createStatement();
-      Double templat = Double.parseDouble(lat);
-      Double templon = Double.parseDouble(lon);
-      int templatCord = (int) (templat * 1000000);
-      int templonCord = (int) (templon * 1000000);
-      String sql1 = "INSERT INTO maps (FK_POLYGON_ID, LAT, LON, LAT_CORD, LON_CORD) " + "VALUES("
-          + uniq_Zone_id + ", " + templat + ", " + templon + ", " + templatCord + ", " + templonCord
-          + ")";
-
-      myStmt.executeUpdate(sql1);
-
-    } finally {
-      close(myStmt, myRs);
-    }
+    Double templat = Double.parseDouble(lat);
+    Double templon = Double.parseDouble(lon);
+    int templatCord = (int) (templat * 1000000);
+    int templonCord = (int) (templon * 1000000);
+    mapsRepository.save(new Maps(uniq_Zone_id, templat, templon, templatCord, templonCord));
   }
 
   /**
    * This function converts a single row in the DB into Polygons and adds them to a list.
-   * 
+   *
    * @param zoneID
    * @return Custom class ZonePolygon object.
    * @throws SQLException
@@ -212,30 +203,15 @@ public class MapHandler {
   public ZonePolygon convertZoneToPolygon(int zoneID) throws SQLException {
 
     ZonePolygon tempZone = new ZonePolygon();
-    Statement myStmt = null;
-    ResultSet myRsCount = null;
-    ResultSet myRs = null;
-
-    try {
-      myStmt = myConn.createStatement();
-      myRs = myStmt.executeQuery("SELECT * FROM maps WHERE FK_POLYGON_ID = " + zoneID);
-
-      if (myRs != null) {
-        tempZone.setZoneID(zoneID);
-
-        while (myRs.next()) {
-          int tempLat = Integer.parseInt(myRs.getString("LAT_CORD"));
-          int tempLon = Integer.parseInt(myRs.getString("LON_CORD"));
-          tempZone.addPoint(tempLat, tempLon);
-
-        }
+    List<Maps> maps = mapsRepository.findByFKPOLYGONID(zoneID);
+    if (maps.size() > 0) {
+      tempZone.setZoneID(zoneID);
+      for (Maps map : maps) {
+        tempZone.addPoint((int) map.getLAT_CORD(), (int) map.getLON_CORD());
       }
-      return tempZone;
-    } finally {
-      close(myStmt, myRs);
     }
 
-
+    return tempZone;
   }
 
   /**
@@ -247,27 +223,13 @@ public class MapHandler {
   public List<ZonePolygon> convertAllZonesToPolygon() throws SQLException {
 
     List<ZonePolygon> list = new ArrayList<>();
-    Statement myStmt = null;
-    ResultSet myRs1 = null;
-    try {
-      myStmt = myConn.createStatement();
-      myRs1 = myStmt.executeQuery("SELECT DISTINCT FK_POLYGON_ID FROM MAPS");
-
-      if (myRs1 != null) {
-        while (myRs1.next()) {
-          // todo
-
-          ZonePolygon tempZone =
-              convertZoneToPolygon(Integer.parseInt(myRs1.getString("FK_POLYGON_ID")));
-          list.add(tempZone);
-
-
-        }
-      }
-      return list;
-    } finally {
-      close(myStmt, myRs1);
+    List<Integer> fkPolygonIds = mapsRepository.findMapsDistinctBy();
+    for (int id : fkPolygonIds) {
+      ZonePolygon zonePolygon = convertZoneToPolygon(id);
+      list.add(zonePolygon);
     }
+
+    return  list;
   }
 
   /**
@@ -278,21 +240,12 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneCodeForID(int zoneID) throws SQLException {
-    Statement myStmt = null;
-    ResultSet myRs = null;
-    String zoneCode = null;
-    try {
-      myStmt = myConn.createStatement();
-      myRs = myStmt.executeQuery("SELECT * FROM polygons WHERE POLYGON_ID = " + zoneID);
-      if (myRs != null) {
-        while (myRs.next()) {
-          zoneCode = myRs.getString("ZONE_CODE");
-        }
-      }
-      return zoneCode;
-    } finally {
-      close(myStmt, myRs);
+    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    if (potentialPolygons != null) {
+      return potentialPolygons.getZONE_CODE();
     }
+
+    return null;
   }
 
   /**
@@ -303,21 +256,12 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneCode2ForID(int zoneID) throws SQLException {
-    Statement myStmt = null;
-    ResultSet myRs = null;
-    String zoneCode = null;
-    try {
-      myStmt = myConn.createStatement();
-      myRs = myStmt.executeQuery("SELECT * FROM polygons WHERE POLYGON_ID = " + zoneID);
-      if (myRs != null) {
-        while (myRs.next()) {
-          zoneCode = myRs.getString("ZONE_CODE_2");
-        }
-      }
-      return zoneCode;
-    } finally {
-      close(myStmt, myRs);
+    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    if (potentialPolygons != null) {
+      return potentialPolygons.getZONE_CODE_2();
     }
+
+    return null;
   }
 
   /**
@@ -328,21 +272,12 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneCode3ForID(int zoneID) throws SQLException {
-    Statement myStmt = null;
-    ResultSet myRs = null;
-    String zoneCode = null;
-    try {
-      myStmt = myConn.createStatement();
-      myRs = myStmt.executeQuery("SELECT * FROM polygons WHERE POLYGON_ID = " + zoneID);
-      if (myRs != null) {
-        while (myRs.next()) {
-          zoneCode = myRs.getString("ZONE_CODE_3");
-        }
-      }
-      return zoneCode;
-    } finally {
-      close(myStmt, myRs);
+    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    if (potentialPolygons != null) {
+      return potentialPolygons.getZONE_CODE_3();
     }
+
+    return null;
   }
 
   /**
@@ -353,43 +288,12 @@ public class MapHandler {
    * @throws SQLException
    */
   public String getZoneNoteForID(int zoneID) throws SQLException {
-    Statement myStmt = null;
-    ResultSet myRs = null;
-    String zoneCode = null;
-    try {
-      myStmt = myConn.createStatement();
-      myRs = myStmt.executeQuery("SELECT * FROM polygons WHERE POLYGON_ID = " + zoneID);
-      if (myRs != null) {
-        while (myRs.next()) {
-          zoneCode = myRs.getString("ZONE_NOTE");
-        }
-      }
-      return zoneCode;
-    } finally {
-      close(myStmt, myRs);
+    Polygons potentialPolygons =  polygonsRepository.findById(zoneID).orElse(null);
+    if (potentialPolygons != null) {
+      return potentialPolygons.getZONE_NOTE();
     }
+
+    return null;
   }
-
-
-
-  private static void close(Connection myConn, Statement myStmt, ResultSet myRs)
-      throws SQLException {
-
-    if (myRs != null) {
-      myRs.close();
-    }
-    if (myStmt != null) {
-    }
-    if (myConn != null) {
-      myConn.close();
-    }
-  }
-
-  private void close(Statement myStmt, ResultSet myRs) throws SQLException {
-    close(null, myStmt, myRs);
-  }
-
-
 }
-
 
