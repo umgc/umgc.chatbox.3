@@ -4,27 +4,15 @@
  */
 package com.chatbot.permit.municipal.zones;
 
-import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-
-/**
- *
- * @author bmurray
- */
+/** @author bmurray */
 public class MapPoint {
 
-  @Autowired
-  private ImportKML newKML;
-  @Autowired
-  private List<ZonePolygon> mapZones;
+  @Autowired private ImportKML newKML;
+  @Autowired private List<ZonePolygon> mapZones;
 
   // Define Infinite
   public MapPoint() {
@@ -34,10 +22,8 @@ public class MapPoint {
 
       mapZones = newKML.convertAllZonesToPolygon();
 
-
     } catch (Exception exc) {
       System.out.println(exc.getMessage());
-
     }
   }
 
@@ -63,7 +49,6 @@ public class MapPoint {
       return list;
     } catch (Exception exc) {
       System.out.println(exc.getMessage());
-
     }
     return list;
   }
@@ -88,5 +73,4 @@ public class MapPoint {
       System.out.println(exc.getMessage());
     }
   }
-
 }

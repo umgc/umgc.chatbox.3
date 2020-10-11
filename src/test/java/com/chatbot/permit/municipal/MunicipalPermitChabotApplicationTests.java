@@ -8,5 +8,4 @@ class MunicipalPermitChabotApplicationTests {
 
   @Test
   void contextLoads() {}
-
 }

@@ -6,13 +6,7 @@ package com.chatbot.permit.municipal.zones;
 
 import java.awt.Polygon;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-/**
- *
- * @author bmurray
- */
+/** @author bmurray */
 public class ZonePolygon extends Polygon {
 
   private String ZoneCode;
@@ -33,5 +27,4 @@ public class ZonePolygon extends Polygon {
   public void setZoneCode(String zone) {
     ZoneCode = zone;
   }
-
 }

@@ -6,8 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class JsonParsingService implements ParsingService {
-  @Autowired
-  private RestTemplate restTemplate;
+  @Autowired private RestTemplate restTemplate;
 
   @Override
   public Object parse(String url) {

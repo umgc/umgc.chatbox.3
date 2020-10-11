@@ -4,7 +4,6 @@
  */
 package com.chatbot.permit.municipal.zones;
 
-import java.awt.Polygon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -16,26 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-
-
-/**
- *
- * @author bmurray
- */
-
+/** @author bmurray */
 public class ImportKML {
   private Connection myConn;
-
 
   public ImportKML() throws Exception {
     String dbName = "TEST";
@@ -56,9 +45,21 @@ public class ImportKML {
       Double templon = Double.parseDouble(lon);
       int templatCord = (int) (templat * 1000000);
       int templonCord = (int) (templon * 1000000);
-      String sql = "INSERT INTO ZONE (UNQ_ZONE_ID, ZONE_CODE, LAT, LON, LAT_CORD, LON_CORD) "
-          + "VALUES(" + uniq_Zone_id + ", '" + zone + "', " + templat + ", " + templon + ", "
-          + templatCord + ", " + templonCord + ")";
+      String sql =
+          "INSERT INTO ZONE (UNQ_ZONE_ID, ZONE_CODE, LAT, LON, LAT_CORD, LON_CORD) "
+              + "VALUES("
+              + uniq_Zone_id
+              + ", '"
+              + zone
+              + "', "
+              + templat
+              + ", "
+              + templon
+              + ", "
+              + templatCord
+              + ", "
+              + templonCord
+              + ")";
       myStmt.executeUpdate(sql);
 
     } finally {
@@ -97,8 +98,9 @@ public class ImportKML {
               String ZoneName = eElement.getElementsByTagName("name").item(0).getTextContent();
 
               // Scan input for Cordniates in zone and store in table
-              Scanner input = new Scanner(
-                  eElement.getElementsByTagName("coordinates").item(0).getTextContent());
+              Scanner input =
+                  new Scanner(
+                      eElement.getElementsByTagName("coordinates").item(0).getTextContent());
               while (input.hasNextLine()) {
 
                 String lineIn = input.nextLine().trim();
@@ -111,10 +113,8 @@ public class ImportKML {
                   addZoneCord(temp, ZoneName, tempLat, tempLon);
                   // System.out.println("Zone: " + ZoneID + " Lat: " + tempLat + " Lon: " +tempLon);
                 }
-
               }
             }
-
           }
         }
       }
@@ -124,8 +124,6 @@ public class ImportKML {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-
   }
 
   public ZonePolygon convertZoneToPolygon(int zoneID) throws SQLException {
@@ -147,15 +145,12 @@ public class ImportKML {
           int tempLat = Integer.parseInt(myRs.getString("LAT_CORD"));
           int tempLon = Integer.parseInt(myRs.getString("LON_CORD"));
           tempZone.addPoint(tempLat, tempLon);
-
         }
       }
       return tempZone;
     } finally {
       close(myStmt, myRs);
     }
-
-
   }
 
   public List<ZonePolygon> convertAllZonesToPolygon() throws SQLException {
@@ -174,8 +169,6 @@ public class ImportKML {
           ZonePolygon tempZone =
               convertZoneToPolygon(Integer.parseInt(myRs1.getString("UNQ_ZONE_ID")));
           list.add(tempZone);
-
-
         }
       }
       return list;
@@ -190,8 +183,7 @@ public class ImportKML {
     if (myRs != null) {
       myRs.close();
     }
-    if (myStmt != null) {
-    }
+    if (myStmt != null) {}
     if (myConn != null) {
       myConn.close();
     }
@@ -201,12 +193,8 @@ public class ImportKML {
     close(null, myStmt, myRs);
   }
 
-
   public static void main(String[] args) throws Exception {
     // ImportKML dbo = new ImportKML();
 
   }
-
 }
-
-

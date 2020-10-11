@@ -4,7 +4,6 @@
  */
 package com.chatbot.permit.municipal.zones;
 
-import java.awt.Polygon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -16,24 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-
-
-/**
- *
- * @author bmurray
- */
+/** @author bmurray */
 public class MapHandler {
   private final Connection myConn;
   private static List<ZonePolygon> mapZones;
-
-
 
   public MapHandler() throws Exception {
     String dbName = "TEST";
@@ -45,12 +37,11 @@ public class MapHandler {
     // this.parseKML(); //uncomment this to import file on start
     // System.out.println("DB connection successful to: " + dbURL);
     mapZones = this.convertAllZonesToPolygon();
-
   }
 
   /**
    * This function returns a list of the custom ZonePolygon objects that are in the DB.
-   * 
+   *
    * @return
    */
   public List<ZonePolygon> getMapZones() {
@@ -61,7 +52,7 @@ public class MapHandler {
    * This function parses through a KML file and imports the contents into two tables. One table
    * stores the the ID, the zone, and the zone again as a note. The second table stores the ID, the
    * lat and lon, and the lat and lon converted to ints.
-   * 
+   *
    * @throws Exception
    */
   public void parseKML() throws Exception {
@@ -94,8 +85,9 @@ public class MapHandler {
               addZone(temp, ZoneName);
 
               // Scan input for Cordniates in zone and store in table
-              Scanner input = new Scanner(
-                  eElement.getElementsByTagName("coordinates").item(0).getTextContent());
+              Scanner input =
+                  new Scanner(
+                      eElement.getElementsByTagName("coordinates").item(0).getTextContent());
               while (input.hasNextLine()) {
                 String lineIn = input.nextLine().trim();
                 if (lineIn.contains(",")) {
@@ -117,14 +109,12 @@ public class MapHandler {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-
   }
 
   /**
    * This function takes in coordinates and then loops through all polygons in the db until it finds
    * one that contains the coordinates.
-   * 
+   *
    * @param lat
    * @param lon
    * @return Returns the zone id if found or a -1 if not found.
@@ -149,14 +139,13 @@ public class MapHandler {
       }
     } catch (Exception exc) {
       System.out.println(exc.getMessage());
-
     }
-    return -1;// returns negative one if no zone is found.
+    return -1; // returns negative one if no zone is found.
   }
 
   /**
    * This function takes in the variables need to add the a zone to a database.
-   * 
+   *
    * @param uniq_Zone_id
    * @param zone
    * @throws Exception
@@ -166,8 +155,15 @@ public class MapHandler {
     ResultSet myRs = null;
     try {
       myStmt = myConn.createStatement();
-      String sql1 = "INSERT INTO polygons (POLYGON_ID, ZONE_CODE, ZONE_NOTE) " + "VALUES("
-          + uniq_Zone_id + ", '" + zone + "', '" + zone + "')";
+      String sql1 =
+          "INSERT INTO polygons (POLYGON_ID, ZONE_CODE, ZONE_NOTE) "
+              + "VALUES("
+              + uniq_Zone_id
+              + ", '"
+              + zone
+              + "', '"
+              + zone
+              + "')";
       myStmt.executeUpdate(sql1);
     } finally {
       close(myStmt, myRs);
@@ -176,7 +172,7 @@ public class MapHandler {
 
   /**
    * This function takes in the variables need to add the coordinates to a database.
-   * 
+   *
    * @param uniq_Zone_id
    * @param lat
    * @param lon
@@ -191,9 +187,19 @@ public class MapHandler {
       Double templon = Double.parseDouble(lon);
       int templatCord = (int) (templat * 1000000);
       int templonCord = (int) (templon * 1000000);
-      String sql1 = "INSERT INTO maps (FK_POLYGON_ID, LAT, LON, LAT_CORD, LON_CORD) " + "VALUES("
-          + uniq_Zone_id + ", " + templat + ", " + templon + ", " + templatCord + ", " + templonCord
-          + ")";
+      String sql1 =
+          "INSERT INTO maps (FK_POLYGON_ID, LAT, LON, LAT_CORD, LON_CORD) "
+              + "VALUES("
+              + uniq_Zone_id
+              + ", "
+              + templat
+              + ", "
+              + templon
+              + ", "
+              + templatCord
+              + ", "
+              + templonCord
+              + ")";
 
       myStmt.executeUpdate(sql1);
 
@@ -204,7 +210,7 @@ public class MapHandler {
 
   /**
    * This function converts a single row in the DB into Polygons and adds them to a list.
-   * 
+   *
    * @param zoneID
    * @return Custom class ZonePolygon object.
    * @throws SQLException
@@ -227,20 +233,17 @@ public class MapHandler {
           int tempLat = Integer.parseInt(myRs.getString("LAT_CORD"));
           int tempLon = Integer.parseInt(myRs.getString("LON_CORD"));
           tempZone.addPoint(tempLat, tempLon);
-
         }
       }
       return tempZone;
     } finally {
       close(myStmt, myRs);
     }
-
-
   }
 
   /**
    * This function converts all zones in the DB into Polygons and adds them to a list.
-   * 
+   *
    * @return List of custom class ZonePolygons.
    * @throws SQLException
    */
@@ -260,8 +263,6 @@ public class MapHandler {
           ZonePolygon tempZone =
               convertZoneToPolygon(Integer.parseInt(myRs1.getString("FK_POLYGON_ID")));
           list.add(tempZone);
-
-
         }
       }
       return list;
@@ -272,7 +273,7 @@ public class MapHandler {
 
   /**
    * This function returns the string value of the zone code
-   * 
+   *
    * @param zoneID
    * @return string value of zone code
    * @throws SQLException
@@ -297,7 +298,7 @@ public class MapHandler {
 
   /**
    * This function returns the string value of any 2nd zone code associated.
-   * 
+   *
    * @param zoneID
    * @return string value of zone code Will return NULL if no value found
    * @throws SQLException
@@ -322,7 +323,7 @@ public class MapHandler {
 
   /**
    * This function returns the string value of any 3rd zone code associated.
-   * 
+   *
    * @param zoneID
    * @return string value of zone code Will return NULL if no value found
    * @throws SQLException
@@ -347,7 +348,7 @@ public class MapHandler {
 
   /**
    * This function returns the string value of any note tied to the zone code associated.
-   * 
+   *
    * @param zoneID
    * @return string value of zone note Will return NULL if no value found
    * @throws SQLException
@@ -370,16 +371,13 @@ public class MapHandler {
     }
   }
 
-
-
   private static void close(Connection myConn, Statement myStmt, ResultSet myRs)
       throws SQLException {
 
     if (myRs != null) {
       myRs.close();
     }
-    if (myStmt != null) {
-    }
+    if (myStmt != null) {}
     if (myConn != null) {
       myConn.close();
     }
@@ -388,8 +386,4 @@ public class MapHandler {
   private void close(Statement myStmt, ResultSet myRs) throws SQLException {
     close(null, myStmt, myRs);
   }
-
-
 }
-
-

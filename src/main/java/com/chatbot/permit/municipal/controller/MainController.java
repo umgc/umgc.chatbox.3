@@ -2,6 +2,10 @@ package com.chatbot.permit.municipal.controller;
 
 import com.chatbot.permit.municipal.domain.Location;
 import com.chatbot.permit.municipal.service.ParsingService;
+import com.chatbot.permit.municipal.zones.MapPoint;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,11 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import com.chatbot.permit.municipal.zones.MapPoint;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @RestController
 public class MainController {
@@ -21,10 +20,12 @@ public class MainController {
       "http://www.mapquestapi.com/geocoding/v1/address?key=" + "&location=";
   MapPoint startApp = new MapPoint();
 
-  @Autowired
-  private ParsingService parsingService;
+  @Autowired private ParsingService parsingService;
 
-  @RequestMapping(value = "/geocode", method = RequestMethod.POST, consumes = "application/json",
+  @RequestMapping(
+      value = "/geocode",
+      method = RequestMethod.POST,
+      consumes = "application/json",
       produces = "application/json")
   public LinkedHashMap main(@RequestBody Location userLocation) throws Exception {
     LinkedHashMap latLng;
@@ -41,9 +42,9 @@ public class MainController {
       LinkedHashMap topResult = (LinkedHashMap) results.get(0);
       ArrayList<Object> locations = (ArrayList<Object>) topResult.get("locations");
       addressInfo = (LinkedHashMap) locations.get(0);
-    } catch (Exception exe) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "Failed to Retrieve Address Information");
+    } catch (Exception exe) { // touch
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Failed to Retrieve Address Information");
     }
 
     /**

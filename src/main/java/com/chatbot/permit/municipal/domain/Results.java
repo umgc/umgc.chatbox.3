@@ -1,7 +1,6 @@
 package com.chatbot.permit.municipal.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
 @JsonIgnoreProperties

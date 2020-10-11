@@ -6,27 +6,20 @@ package com.chatbot.permit.municipal;
 
 import static org.junit.Assert.assertEquals;
 
+import com.chatbot.permit.municipal.zones.MapHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chatbot.permit.municipal.zones.MapHandler;
-
-/**
- *
- * @author bmurray
- */
+/** @author bmurray */
 public class MapHandlerJUnitTest {
 
   public MapHandlerJUnitTest() {}
 
   @BeforeClass
-  public static void setUpClass() {
-
-
-  }
+  public static void setUpClass() {}
 
   @AfterClass
   public static void tearDownClass() {}
@@ -66,7 +59,6 @@ public class MapHandlerJUnitTest {
     assertEquals("CD-6", new MapHandler().getZoneCodeForID(129));
     assertEquals("RM-12", new MapHandler().getZoneCodeForID(315));
     assertEquals(null, new MapHandler().getZoneCodeForID(-1));
-
   }
 
   @Test
@@ -78,7 +70,6 @@ public class MapHandlerJUnitTest {
     assertEquals(null, new MapHandler().getZoneCode2ForID(129));
     assertEquals(null, new MapHandler().getZoneCode2ForID(315));
     assertEquals(null, new MapHandler().getZoneCode2ForID(-1));
-
   }
 
   @Test
@@ -90,7 +81,6 @@ public class MapHandlerJUnitTest {
     assertEquals(null, new MapHandler().getZoneCode3ForID(129));
     assertEquals(null, new MapHandler().getZoneCode3ForID(315));
     assertEquals(null, new MapHandler().getZoneCode3ForID(-1));
-
   }
 
   @Test
@@ -102,6 +92,5 @@ public class MapHandlerJUnitTest {
     assertEquals("CD-6", new MapHandler().getZoneNoteForID(129));
     assertEquals("RM-12", new MapHandler().getZoneNoteForID(315));
     assertEquals(null, new MapHandler().getZoneNoteForID(-1));
-
   }
 }
