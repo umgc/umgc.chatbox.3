@@ -56,13 +56,14 @@ class MunicipalPermitChabotApplicationTests {
     // mock data for maps repository
     List<Integer> zoneIds = Arrays.asList(71);
     given(mockMapsRepository.findMapsDistinctBy()).willReturn(zoneIds);
-    given(mockMapsRepository.findByFKPOLYGONID(71)).willReturn(Arrays.asList(
-            new Maps(71, -118.171751, 34.181911, -118171751, 34181911),
+    given(mockMapsRepository.findByFKPOLYGONID(71))
+        .willReturn(Arrays.asList(new Maps(71, -118.171751, 34.181911, -118171751, 34181911),
             new Maps(71, -118.166906, 34.151521, -118166906, 34151521),
             new Maps(71, -118.164063, 34.149659, -118164063, 34149659),
             new Maps(71, -118.163817, 34.164540, -118163817, 34164540)));
     // mock data for polygons repository
-    given(mockPolygonsRepository.findById(71)).willReturn(java.util.Optional.of(new Polygons(71, "OS", "OS")));
+    given(mockPolygonsRepository.findById(71))
+        .willReturn(java.util.Optional.of(new Polygons(71, "OS", "OS")));
   }
 
   @Test
@@ -93,15 +94,13 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
+    given(jsonParsingService.parse(
+        "http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
             .willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/geocode")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': 71}"));
+    this.mockMvc
+        .perform(post("/geocode").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'polygonZoneID': 71}"));
   }
 
   @Test
@@ -127,15 +126,13 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=1616 McCormick Dr, Pasadena, CA"))
+    given(jsonParsingService.parse(
+        "http://www.mapquestapi.com/geocoding/v1/address?key=&location=1616 McCormick Dr, Pasadena, CA"))
             .willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/geocode")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': -1}"));
+    this.mockMvc
+        .perform(post("/geocode").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'polygonZoneID': -1}"));
   }
 
   @Test
@@ -161,15 +158,13 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
+    given(jsonParsingService.parse(
+        "http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
             .willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/geocode")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': -1}"));
+    this.mockMvc
+        .perform(post("/geocode").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'polygonZoneID': -1}"));
   }
 
   @Test
@@ -180,14 +175,12 @@ class MunicipalPermitChabotApplicationTests {
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
 
-    given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
+    given(jsonParsingService.parse(
+        "http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
             .willReturn(null);
 
-    this.mockMvc.perform(post("/geocode")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': -1}"));
+    this.mockMvc
+        .perform(post("/geocode").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'polygonZoneID': -1}"));
   }
 }
