@@ -6,6 +6,7 @@ import com.chatbot.permit.municipal.repository.PolygonsRepository;
 import com.chatbot.permit.municipal.service.ParsingService;
 import com.chatbot.permit.municipal.zones.MapHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,9 +22,13 @@ public class MainController {
 	PolygonsRepository polygonsRepository;
 	@Autowired
 	MapsRepository mapsRepository;
-  
-    private static final String JSON_GEOCODE =
-    		"http://www.mapquestapi.com/geocoding/v1/address?key=" + "&location=";
+
+	@Value("${mapquest.apikey}")
+	private String mapQuestApiKey;
+
+	private final String CITY_AND_STATE = "Pasadena, CA";
+	private final String MAPQUEST_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=";
+
 
   @Autowired
   private ParsingService parsingService;
@@ -34,7 +39,7 @@ public class MainController {
 	// repositories are not initialize outside of @RequestMapping so declare MapHandler instance here
 	MapHandler startApp = new MapHandler(polygonsRepository, mapsRepository);
     LinkedHashMap latLng;
-    String mapquestUrl = JSON_GEOCODE + userLocation.getLocation();
+    String mapquestUrl = MAPQUEST_BASE_URL + mapQuestApiKey + "&location=" + userLocation.getLocation() + ", " + CITY_AND_STATE;
     LinkedHashMap addressInfo;
     String geocodeQualityCode;
     LinkedHashMap<String, Integer> polygonZoneID = new LinkedHashMap<String, Integer>();

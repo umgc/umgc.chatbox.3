@@ -73,7 +73,7 @@ class MunicipalPermitChabotApplicationTests {
   @Test
   public void validAddress() throws Exception {
     Object location = new Object() {
-      public String location = "360 N Arroyo Blvd, Pasadena, CA 91103";
+      public String location = "360 N Arroyo Blvd";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -94,7 +94,7 @@ class MunicipalPermitChabotApplicationTests {
     mapQuestResponse.put("results", results);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA 91103"))
+            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
             .willReturn(mapQuestResponse);
 
     this.mockMvc.perform(post("/geocode")
@@ -107,7 +107,7 @@ class MunicipalPermitChabotApplicationTests {
   @Test
   public void outOfPasadena() throws Exception {
     Object location = new Object() {
-      public String location = "1616 McCormick Dr, Largo, MD 20774";
+      public String location = "1616 McCormick Dr";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -128,7 +128,7 @@ class MunicipalPermitChabotApplicationTests {
     mapQuestResponse.put("results", results);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=1616 McCormick Dr, Largo, MD 20774"))
+            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=1616 McCormick Dr, Pasadena, CA"))
             .willReturn(mapQuestResponse);
 
     this.mockMvc.perform(post("/geocode")
@@ -141,7 +141,7 @@ class MunicipalPermitChabotApplicationTests {
   @Test
   public void notHighestConfidence() throws Exception {
     Object location = new Object() {
-      public String location = "360 N Arroyo Blvd, Pasadena, CA 91103";
+      public String location = "360 N Arroyo Blvd";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -162,7 +162,7 @@ class MunicipalPermitChabotApplicationTests {
     mapQuestResponse.put("results", results);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA 91103"))
+            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
             .willReturn(mapQuestResponse);
 
     this.mockMvc.perform(post("/geocode")
@@ -175,13 +175,13 @@ class MunicipalPermitChabotApplicationTests {
   @Test
   public void noMapQuestResponse() throws Exception {
     Object location = new Object() {
-      public String location = "360 N Arroyo Blvd, Pasadena, CA 91103";
+      public String location = "360 N Arroyo Blvd";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA 91103"))
+            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
             .willReturn(null);
 
     this.mockMvc.perform(post("/geocode")
