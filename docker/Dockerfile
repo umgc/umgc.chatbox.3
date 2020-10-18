@@ -4,6 +4,15 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
 	apt-get --no-install-recommends -y install default-jre openjdk-11-jdk
 	
+ARG MAPQUEST_APIKEY
+ARG DB_USER
+ARG DB_PASS
+ARG DB_URL
+
+ENV MAPQUEST_APIKEY=$MAPQUEST_APIKEY
+ENV DB_USER=$DB_USER
+ENV DB_PASS=$DB_PASS
+ENV DB_URL=$DB_URL
 
 ARG VERSION
 LABEL VERSION=$VERSION
