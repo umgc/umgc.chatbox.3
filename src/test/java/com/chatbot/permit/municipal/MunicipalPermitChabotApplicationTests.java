@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -94,7 +95,7 @@ class MunicipalPermitChabotApplicationTests {
     mapQuestResponse.put("results", results);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
+            .parse(anyString()))
             .willReturn(mapQuestResponse);
 
     this.mockMvc.perform(post("/geocode")
@@ -128,7 +129,7 @@ class MunicipalPermitChabotApplicationTests {
     mapQuestResponse.put("results", results);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=1616 McCormick Dr, Pasadena, CA"))
+            .parse(anyString()))
             .willReturn(mapQuestResponse);
 
     this.mockMvc.perform(post("/geocode")
@@ -162,7 +163,7 @@ class MunicipalPermitChabotApplicationTests {
     mapQuestResponse.put("results", results);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
+            .parse(anyString()))
             .willReturn(mapQuestResponse);
 
     this.mockMvc.perform(post("/geocode")
@@ -181,7 +182,7 @@ class MunicipalPermitChabotApplicationTests {
     String locationJson = locationMapper.writeValueAsString(location);
 
     given(jsonParsingService
-            .parse("http://www.mapquestapi.com/geocoding/v1/address?key=&location=360 N Arroyo Blvd, Pasadena, CA"))
+            .parse(anyString()))
             .willReturn(null);
 
     this.mockMvc.perform(post("/geocode")

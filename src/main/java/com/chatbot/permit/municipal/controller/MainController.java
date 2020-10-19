@@ -47,6 +47,7 @@ public class MainController {
     try {
     	// send request for lat and long values from mapquest api
     	LinkedHashMap response = (LinkedHashMap) parsingService.parse(mapquestUrl);
+    	System.out.println(mapquestUrl);
 		// extract address info from nested return object
 		ArrayList<Object> results = (ArrayList<Object>) response.get("results");
 		LinkedHashMap topResult = (LinkedHashMap) results.get(0);
