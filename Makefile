@@ -15,6 +15,7 @@ APP_TAG=$(VERSION)
 APP_IMG=$(APP_NAME):$(APP_TAG)
 REMOTE_IMG:=docker.io/umgccaps/$(APP_IMG)
 BUILD_IMG=docker.io/umgccaps/advance-development-factory:latest
+BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Maven options
 MAVEN_OPTS:=-Dversion=$(VERSION)
@@ -24,14 +25,25 @@ UUID_FILENAME:=user.uuid
 UUID:=$(shell cat $(UUID_FILENAME) 2> /dev/null || (uuidgen | sed s/'-'/''/g | head -c 10 \
          | tr A-Z a-z > $(UUID_FILENAME) && cat $(UUID_FILENAME)))
 
+
+BUILD_ARGS=--build-arg MAPQUEST_APIKEY=$(MAPQUEST_APIKEY)
+BUILD_ARGS+=--build-arg DB_USER=$(DB_USER)
+BUILD_ARGS+=--build-arg DB_PASS=$(DB_PASS)
+BUILD_ARGS+=--build-arg DB_URL=$(DB_URL)
+BUILD_ARGS+=--build-arg VERSION=$(VERSION)
+BUILD_ARGS+=--build-arg MUNICIPALPERMITCHABOT_APP=$(MUNICIPALPERMITCHABOT_JAR)
+
+
 # Skip test flag
 # make all SKIP_TESTS=y <- doest not run unit tests
 ifdef SKIP_TESTS
 	MAVEN_OPTS:=$(MAVEN_OPTS) -Dmaven.test.skip=true
 endif
 
+export VERSION
+
 # PHONY
-.PHONY: all image start clean push
+.PHONY: all image start clean push sonar
 
 ##############################################################
 #	make all:
@@ -56,17 +68,21 @@ target/$(MUNICIPALPERMITCHABOT_JAR):
 ##############################################################
 image: target/$(MUNICIPALPERMITCHABOT_JAR)
 	cp target/$(MUNICIPALPERMITCHABOT_JAR) ./$(MUNICIPALPERMITCHABOT_JAR)
-	docker build -f ./docker/Dockerfile --build-arg VERSION=$(VERSION) \
-		--build-arg MUNICIPALPERMITCHABOT_APP=$(MUNICIPALPERMITCHABOT_JAR) -t $(APP_IMG) .
+	docker build -f ./docker/Dockerfile $(BUILD_ARGS) -t $(APP_IMG) .
 	rm -rf ./$(MUNICIPALPERMITCHABOT_JAR)
 
+sonar:
+	docker run -v $(PWD)/:/repo --entrypoint '/bin/bash' $(BUILD_IMG) \
+		-c 'cd /repo &&	mvn verify sonar:sonar -Dsonar.branch.name=$(BRANCH)'
+		
 ##############################################################
 #	make start:
 #		This recipe start the project-tracker Docker app
 #
 ##############################################################
 start:
-	docker run --rm --name $(APP_NAME) $(APP_IMG)
+	docker-compose -f docker/docker-compose.yml  up 
+
 
 ##############################################################
 #	make clean:

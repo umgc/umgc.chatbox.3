@@ -1,0 +1,24 @@
+---
+version: '2'
+services:
+  chat-bot:
+    image: municipal-permit-chabot.app:${VERSION}
+    hostname: chat-bot
+    ports:
+      - 8080:8080
+    depends_on:
+      chat-bot-db:
+        condition: service_healthy
+    restart: always
+
+  chat-bot-db:
+    image: chatbot-db:latest
+    hostname: chat-bot-db
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+
+
+      

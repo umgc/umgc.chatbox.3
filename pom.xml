@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.3.4.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>MunicipalPermitChabot</artifactId>
@@ -18,6 +17,9 @@
 		<java.version>1.8</java.version>
 		<azure.version>2.3.5</azure.version>
 		<testcontainers.version>1.14.3</testcontainers.version>
+		<sonar.projectKey>umgccapstone_umgc.chatbox.3</sonar.projectKey>
+  		<sonar.organization>umgc-capstone</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<dependencies>
@@ -123,7 +125,38 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>2.4.0</version>
+				<configuration>
+					<java>
+					  <!-- These are the defaults, you can override if you want -->
+					  <includes>
+						<include>src/main/java/**/*.java</include>
+						<include>src/test/java/**/*.java</include>
+					  </includes>
+				  
+					  <importOrder />
+				  
+					  <removeUnusedImports /> <!-- self-explanatory -->
+				  
+					  <googleJavaFormat>
+						<version>1.9</version>
+						<style>GOOGLE</style>
+					  </googleJavaFormat>
+					</java>
+				  </configuration>
+			</plugin>
 		</plugins>
+		<pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>		
 	</build>
 
 </project>

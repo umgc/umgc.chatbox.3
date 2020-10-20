@@ -26,6 +26,10 @@ steps:
 
 - task: CmdLine@2
   inputs:
+    script: 'make sonar'
+
+- task: CmdLine@2
+  inputs:
     script: 'make image'
 
 - task: CmdLine@2
