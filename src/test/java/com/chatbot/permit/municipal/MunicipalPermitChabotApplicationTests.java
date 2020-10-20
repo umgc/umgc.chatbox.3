@@ -74,7 +74,8 @@ class MunicipalPermitChabotApplicationTests {
   @Test
   public void validAddress() throws Exception {
     Object location = new Object() {
-      public String location = "360 N Arroyo Blvd";
+      public String street1 = "360 N Arroyo Blvd";
+      public String webhookType = "verifyAddress";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -102,13 +103,14 @@ class MunicipalPermitChabotApplicationTests {
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': 71}"));
+            .andExpect(content().json("{'zoneID': 71}"));
   }
 
   @Test
   public void outOfPasadena() throws Exception {
     Object location = new Object() {
-      public String location = "1616 McCormick Dr";
+      public String street1 = "1616 McCormick Dr";
+      public String webhookType = "verifyAddress";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -136,13 +138,14 @@ class MunicipalPermitChabotApplicationTests {
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': -1}"));
+            .andExpect(content().json("{'zoneID': -1}"));
   }
 
   @Test
   public void notHighestConfidence() throws Exception {
     Object location = new Object() {
-      public String location = "360 N Arroyo Blvd";
+      public String street1 = "360 N Arroyo Blvd";
+      public String webhookType = "verifyAddress";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -170,13 +173,14 @@ class MunicipalPermitChabotApplicationTests {
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': -1}"));
+            .andExpect(content().json("{'zoneID': -1}"));
   }
 
   @Test
   public void noMapQuestResponse() throws Exception {
     Object location = new Object() {
-      public String location = "360 N Arroyo Blvd";
+      public String street1 = "360 N Arroyo Blvd";
+      public String webhookType = "verifyAddress";
     };
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
@@ -189,6 +193,6 @@ class MunicipalPermitChabotApplicationTests {
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().json("{'polygonZoneID': -1}"));
+            .andExpect(content().json("{'zoneID': -1}"));
   }
 }
