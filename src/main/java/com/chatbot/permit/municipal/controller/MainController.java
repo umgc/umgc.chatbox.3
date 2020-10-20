@@ -25,8 +25,11 @@ public class MainController {
 
   @Value("${mapquest.apikey}")
   private String mapQuestApiKey;
+  @Value("${address.city}")
+  private String city;
+  @Value("${address.state}")
+  private String state;
 
-  private final String CITY_AND_STATE = "Pasadena, CA";
   private final String MAPQUEST_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=";
 
 
@@ -41,7 +44,7 @@ public class MainController {
     MapHandler startApp = new MapHandler(polygonsRepository, mapsRepository);
     LinkedHashMap latLng;
     String mapquestUrl = MAPQUEST_BASE_URL + mapQuestApiKey + "&location="
-        + userLocation.getLocation() + ", " + CITY_AND_STATE;
+        + userLocation.getLocation() + ", " + city + ", " + state;
     LinkedHashMap addressInfo;
     String geocodeQualityCode;
     LinkedHashMap<String, Integer> polygonZoneID = new LinkedHashMap<String, Integer>();
