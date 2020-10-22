@@ -99,7 +99,7 @@ class MunicipalPermitChabotApplicationTests {
             .parse(anyString()))
             .willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/geocode")
+    this.mockMvc.perform(post("/umgcchatbot")
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -134,7 +134,7 @@ class MunicipalPermitChabotApplicationTests {
             .parse(anyString()))
             .willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/geocode")
+    this.mockMvc.perform(post("/umgcchatbot")
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -169,7 +169,7 @@ class MunicipalPermitChabotApplicationTests {
             .parse(anyString()))
             .willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/geocode")
+    this.mockMvc.perform(post("/umgcchatbot")
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -189,7 +189,7 @@ class MunicipalPermitChabotApplicationTests {
             .parse(anyString()))
             .willReturn(null);
 
-    this.mockMvc.perform(post("/geocode")
+    this.mockMvc.perform(post("/umgcchatbot")
             .content(locationJson)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

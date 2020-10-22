@@ -30,7 +30,7 @@ public class MainController {
 	@Value("${address.state}")
 	private String state;
 
-  @RequestMapping(value = "/geocode", method = RequestMethod.POST, consumes = "application/json",
+  @RequestMapping(value = "/umgcchatbot", method = RequestMethod.POST, consumes = "application/json",
       produces = "application/json")
   public JSONObject main(@RequestBody WatsonArguments watsonArguments) throws Exception {
   	JSONObject response = new JSONObject();
