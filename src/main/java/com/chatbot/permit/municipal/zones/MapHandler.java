@@ -142,7 +142,7 @@ public class MapHandler {
    * @return Returns the zone id if found or a -1 if not found.
    * @throws Exception
    */
-  public int findZones(Double lat, Double lon) throws Exception {
+  public int findZones(Double lat, Double lon) {
     int foundZone;
     int numZones = mapZones.size();
     int tempLat = (int) (lat * 1000000);

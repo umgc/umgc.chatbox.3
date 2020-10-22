@@ -32,7 +32,7 @@ public class AddressVerification {
      *
      * @return
      */
-    private LinkedHashMap<String, Object> getAddressInfo(String street1) {
+    public LinkedHashMap<String, Object> getAddressInfo(String street1) {
         String mapquestUrl = MAPQUEST_BASE_URL + apiKey + "&location=" + street1 + ", " + city + ", " + state;
         LinkedHashMap<String, Object> addressInfo;
 
@@ -61,7 +61,7 @@ public class AddressVerification {
      * @param geocodeQualityCode
      * @return
      */
-    private boolean verifyMapQuestResult(String geocodeQualityCode) {
+    public boolean verifyMapQuestResult(String geocodeQualityCode) {
         return geocodeQualityCode.substring(2).equals("AAA");
     }
 
@@ -72,7 +72,7 @@ public class AddressVerification {
      * @return
      * @throws Exception
      */
-    private int findPolygonZone(LinkedHashMap<String, Double> latLng) throws Exception {
+    public int findPolygonZone(LinkedHashMap<String, Double> latLng) {
         MapHandler startApp = new MapHandler(polygonsRepository, mapsRepository);
 
         return startApp.findZones((Double) latLng.get("lng"), (Double) latLng.get("lat"));
@@ -88,12 +88,7 @@ public class AddressVerification {
             return -1;
         }
 
-        try {
-            polygonZoneID = findPolygonZone((LinkedHashMap<String, Double>) addressInfo.get("latLng"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            polygonZoneID = -1;
-        }
+        polygonZoneID = findPolygonZone((LinkedHashMap<String, Double>) addressInfo.get("latLng"));
 
         return polygonZoneID;
     }
