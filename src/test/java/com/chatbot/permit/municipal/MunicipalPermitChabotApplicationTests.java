@@ -64,6 +64,7 @@ class MunicipalPermitChabotApplicationTests {
             new Maps(71, -118.163817, 34.164540, -118163817, 34164540)));
     // mock data for polygons repository
     given(mockPolygonsRepository.findById(71)).willReturn(java.util.Optional.of(new Polygons(71, "OS", "OS")));
+    this.mainController.initMapHandler();
   }
 
   @Test

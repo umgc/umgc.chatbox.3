@@ -5,6 +5,7 @@ import com.chatbot.permit.municipal.model.Polygons;
 import com.chatbot.permit.municipal.repository.MapsRepository;
 import com.chatbot.permit.municipal.repository.PolygonsRepository;
 import com.chatbot.permit.municipal.service.JsonParsingService;
+import com.chatbot.permit.municipal.zones.MapHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,7 @@ class AddressVerificationTest {
     private MapsRepository mockMapsRepository;
     @MockBean
     private PolygonsRepository mockPolygonsRepository;
+    private MapHandler mapHandler;
 
 
     @BeforeEach
@@ -51,13 +53,14 @@ class AddressVerificationTest {
                 new Maps(71, -118.163817, 34.164540, -118163817, 34164540)));
         // mock data for polygons repository
         given(mockPolygonsRepository.findById(71)).willReturn(java.util.Optional.of(new Polygons(71, "OS", "OS")));
+        this.mapHandler = new MapHandler(mockPolygonsRepository, mockMapsRepository);
     }
 
     @Test
     public void validMapQuestResult() {
         final boolean EXPECTED_RESULT = true;
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         boolean result = av.verifyMapQuestResult("L1AAA");
 
         assertEquals(EXPECTED_RESULT, result);
@@ -67,7 +70,7 @@ class AddressVerificationTest {
     public void notValidMapQuestResult() {
         final boolean EXPECTED_RESULT = false;
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         boolean result = av.verifyMapQuestResult("L1ABA");
 
         assertEquals(EXPECTED_RESULT, result);
@@ -96,7 +99,7 @@ class AddressVerificationTest {
                 .parse(anyString()))
                 .willReturn(mapQuestResponse);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         LinkedHashMap<String, Object> result = av.getAddressInfo(street1);
 
         assertEquals(addressInfo, result);
@@ -109,7 +112,7 @@ class AddressVerificationTest {
                 .parse(anyString()))
                 .willReturn(null);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         LinkedHashMap<String, Object> result = av.getAddressInfo(street1);
 
         assertEquals(null, result);
@@ -123,7 +126,7 @@ class AddressVerificationTest {
         latLng.put("lng", -118.166029);
         latLng.put("lat", 34.151636);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         int zoneID = av.findPolygonZone(latLng);
 
         assertEquals(EXPECTED_RESULT, zoneID);
@@ -137,7 +140,7 @@ class AddressVerificationTest {
         latLng.put("lng", -76.846206);
         latLng.put("lat", 38.912614);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         int zoneID = av.findPolygonZone(latLng);
 
         assertEquals(EXPECTED_RESULT, zoneID);
@@ -151,7 +154,7 @@ class AddressVerificationTest {
         latLng.put("lng", -76.846206);
         latLng.put("lat", 38.912614);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         int zoneID = av.findPolygonZone(latLng);
 
         assertEquals(EXPECTED_RESULT, zoneID);
@@ -181,7 +184,7 @@ class AddressVerificationTest {
                 .parse(anyString()))
                 .willReturn(mapQuestResponse);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         int zoneID = av.verifyAddress(street1);
 
         assertEquals(EXPECTED_RESULT, zoneID);
@@ -196,7 +199,7 @@ class AddressVerificationTest {
                 .parse(anyString()))
                 .willReturn(null);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         int zoneID = av.verifyAddress(street1);
 
         assertEquals(EXPECTED_RESULT, zoneID);
@@ -227,7 +230,7 @@ class AddressVerificationTest {
                 .parse(anyString()))
                 .willReturn(mapQuestResponse);
 
-        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mockPolygonsRepository, mockMapsRepository, jsonParsingService);
+        AddressVerification av = new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
         int zoneID = av.verifyAddress(street1);
 
         assertEquals(EXPECTED_RESULT, zoneID);

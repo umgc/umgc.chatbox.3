@@ -1,7 +1,5 @@
 package com.chatbot.permit.municipal.watsonactions;
 
-import com.chatbot.permit.municipal.repository.MapsRepository;
-import com.chatbot.permit.municipal.repository.PolygonsRepository;
 import com.chatbot.permit.municipal.service.ParsingService;
 import com.chatbot.permit.municipal.zones.MapHandler;
 
@@ -13,17 +11,15 @@ public class AddressVerification {
     private String city;
     private String state;
     private String apiKey;
-    private PolygonsRepository polygonsRepository;
-    private MapsRepository mapsRepository;
+    private MapHandler mapHandler;
     private final String MAPQUEST_BASE_URL = "http://www.mapquestapi.com/geocoding/v1/address?key=";
     private ParsingService parsingService;
 
-    public AddressVerification(String city, String state, String apiKey, PolygonsRepository polygonsRepository, MapsRepository mapsRepository, ParsingService parsingService) {
+    public AddressVerification(String city, String state, String apiKey, MapHandler mapHandler, ParsingService parsingService) {
         this.city = city;
         this.state = state;
         this.apiKey = apiKey;
-        this.polygonsRepository = polygonsRepository;
-        this.mapsRepository = mapsRepository;
+        this.mapHandler = mapHandler;
         this.parsingService = parsingService;
     }
 
@@ -73,9 +69,7 @@ public class AddressVerification {
      * @throws Exception
      */
     public int findPolygonZone(LinkedHashMap<String, Double> latLng) {
-        MapHandler startApp = new MapHandler(polygonsRepository, mapsRepository);
-
-        return startApp.findZones((Double) latLng.get("lng"), (Double) latLng.get("lat"));
+        return this.mapHandler.findZones((Double) latLng.get("lng"), (Double) latLng.get("lat"));
     }
 
     public int verifyAddress(String street1) {

@@ -5,6 +5,7 @@ import com.chatbot.permit.municipal.repository.MapsRepository;
 import com.chatbot.permit.municipal.repository.PolygonsRepository;
 import com.chatbot.permit.municipal.service.ParsingService;
 import com.chatbot.permit.municipal.watsonactions.AddressVerification;
+import com.chatbot.permit.municipal.zones.MapHandler;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
 
 @RestController
 public class MainController {
@@ -29,6 +32,12 @@ public class MainController {
 	private String city;
 	@Value("${address.state}")
 	private String state;
+	private MapHandler mapHandler;
+
+	@PostConstruct
+	public void initMapHandler() {
+		this.mapHandler = new MapHandler(polygonsRepository, mapsRepository);
+	}
 
   @RequestMapping(value = "/umgcchatbot", method = RequestMethod.POST, consumes = "application/json",
       produces = "application/json")
@@ -37,7 +46,7 @@ public class MainController {
 
 	switch (watsonArguments.getWebhookType()) {
 		case "verifyAddress":
-			AddressVerification av = new AddressVerification(city, state, mapQuestApiKey, polygonsRepository, mapsRepository, parsingService);
+			AddressVerification av = new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
 			response.put("zoneID", av.verifyAddress(watsonArguments.getStreet1()));
 	}
 
