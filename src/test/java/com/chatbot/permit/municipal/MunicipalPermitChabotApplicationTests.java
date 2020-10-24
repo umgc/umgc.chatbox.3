@@ -57,13 +57,14 @@ class MunicipalPermitChabotApplicationTests {
     // mock data for maps repository
     List<Integer> zoneIds = Arrays.asList(71);
     given(mockMapsRepository.findMapsDistinctBy()).willReturn(zoneIds);
-    given(mockMapsRepository.findByFKPOLYGONID(71)).willReturn(Arrays.asList(
-            new Maps(71, -118.171751, 34.181911, -118171751, 34181911),
+    given(mockMapsRepository.findByFKPOLYGONID(71))
+        .willReturn(Arrays.asList(new Maps(71, -118.171751, 34.181911, -118171751, 34181911),
             new Maps(71, -118.166906, 34.151521, -118166906, 34151521),
             new Maps(71, -118.164063, 34.149659, -118164063, 34149659),
             new Maps(71, -118.163817, 34.164540, -118163817, 34164540)));
     // mock data for polygons repository
-    given(mockPolygonsRepository.findById(71)).willReturn(java.util.Optional.of(new Polygons(71, "OS", "OS")));
+    given(mockPolygonsRepository.findById(71))
+        .willReturn(java.util.Optional.of(new Polygons(71, "OS", "OS")));
     this.mainController.initMapHandler();
   }
 
@@ -96,15 +97,11 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(mapQuestResponse);
+    given(jsonParsingService.parse(anyString())).willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/umgcchatbot")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'zoneID': 71}"));
+    this.mockMvc
+        .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'zoneID': 71}"));
   }
 
   @Test
@@ -131,15 +128,11 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(mapQuestResponse);
+    given(jsonParsingService.parse(anyString())).willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/umgcchatbot")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'zoneID': -1}"));
+    this.mockMvc
+        .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'zoneID': -1}"));
   }
 
   @Test
@@ -166,15 +159,11 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(mapQuestResponse);
+    given(jsonParsingService.parse(anyString())).willReturn(mapQuestResponse);
 
-    this.mockMvc.perform(post("/umgcchatbot")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'zoneID': -1}"));
+    this.mockMvc
+        .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'zoneID': -1}"));
   }
 
   @Test
@@ -186,14 +175,10 @@ class MunicipalPermitChabotApplicationTests {
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(null);
+    given(jsonParsingService.parse(anyString())).willReturn(null);
 
-    this.mockMvc.perform(post("/umgcchatbot")
-            .content(locationJson)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().json("{'zoneID': -1}"));
+    this.mockMvc
+        .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(content().json("{'zoneID': -1}"));
   }
 }
