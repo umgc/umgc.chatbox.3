@@ -67,8 +67,7 @@ public class MainController {
         }
         String zoneCode = polygonsRepository.findZONECODEByPOLYGONID(zoneId);
         ProcessRequest pr = new ProcessRequest(host, userName, password);
-        String link = pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode);
-        response.put("link", link);
+        response = new JSONObject(pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode));
         break;
     }
 

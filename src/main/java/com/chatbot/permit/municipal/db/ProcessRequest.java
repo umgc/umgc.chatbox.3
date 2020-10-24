@@ -7,6 +7,7 @@ package com.chatbot.permit.municipal.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 
 /**
  *
@@ -20,8 +21,8 @@ public class ProcessRequest {
     this.dbConnection = new DBConnection(host, userName, password);
   }
 
-  public String retrieveInformation(String type, String action, String object, String zoneID) {
-    String links;
+  public HashMap<String, String> retrieveInformation(String type, String action, String object, String zoneID) {
+    HashMap<String, String> links;
     String permitDescription = action + " " + object;
 
     switch (type) {
@@ -35,7 +36,7 @@ public class ProcessRequest {
         links = this.retrieveDevelopmentStandardsInfo(zoneID);
         break;
       default:
-        links = "";
+        links = null;
     }
 
     return links;
@@ -48,8 +49,9 @@ public class ProcessRequest {
    * @return is the Permit application URL stored in the DB
    */
 
-  public String retrievePermitInfo(String zoneID, String permitDescription) {
+  public HashMap<String, String> retrievePermitInfo(String zoneID, String permitDescription) {
 
+    HashMap<String, String> appUrlHashMap = new HashMap<String, String>();
     String applicationUrl = "No permit information found.";
 
     try {
@@ -70,7 +72,8 @@ public class ProcessRequest {
       e.printStackTrace();
     }
 
-    return applicationUrl;
+    appUrlHashMap.put("permitUrl", applicationUrl);
+    return appUrlHashMap;
 
   }
 
@@ -81,8 +84,9 @@ public class ProcessRequest {
    * @return is the regulation application URL stored in the DB
    */
 
-  public String retrieveRegulationInfo(String zoneID, String permitDescription) {
+  public HashMap<String, String> retrieveRegulationInfo(String zoneID, String permitDescription) {
 
+    HashMap<String, String> procedureUrlHashMap = new HashMap<String, String>();
     String procedureUrl = "No regulation information found.";
 
     try {
@@ -103,7 +107,8 @@ public class ProcessRequest {
       e.printStackTrace();
     }
 
-    return procedureUrl;
+    procedureUrlHashMap.put("regulationUrl", procedureUrl);
+    return procedureUrlHashMap;
 
   }
 
@@ -113,8 +118,9 @@ public class ProcessRequest {
    * @return returns various development standard URLs associated with the zoneID
    */
 
-  public String retrieveDevelopmentStandardsInfo(String zoneID) {
+  public HashMap<String, String> retrieveDevelopmentStandardsInfo(String zoneID) {
 
+    HashMap <String, String> standards = new HashMap<>();
     String noDevelopmentStandards = "No development standards were found.";
     String generalStandardURL = null;
     String additionalStandardURL = null;
@@ -127,32 +133,33 @@ public class ProcessRequest {
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
-        generalStandardURL =
-            "General Development Standards: " + rs.getString("general_standard_url");
+        generalStandardURL = rs.getString("general_standard_url");
+
+        standards.put("generalStandardURL", generalStandardURL);
+
         additionalStandardURL = rs.getString("additional_standard_url");
 
         if (rs.wasNull()) {
-          additionalStandardURL = "Additional development standards: None";
-        } else {
-          additionalStandardURL = "Additional development standards: " + additionalStandardURL;
+          additionalStandardURL = "None";
         }
+
+        standards.put("additionalStandardURL", additionalStandardURL);
 
         gardenStandardURL = rs.getString("garden_standard_url");
 
         if (rs.wasNull()) {
-          gardenStandardURL = "Garden standards: None";
-        } else {
-          gardenStandardURL = "Garden standards: " + gardenStandardURL;
+          gardenStandardURL = "None";
         }
+
+        standards.put("gardenStandardURL", gardenStandardURL);
 
         frontageandFacadesStandardsURL = rs.getString("frontage_and_facades_standards_url");
 
         if (rs.wasNull()) {
-          frontageandFacadesStandardsURL = "Frontage and facades standards: None";
-        } else {
-          frontageandFacadesStandardsURL =
-              "Frontage and facades standards: " + frontageandFacadesStandardsURL;
+          frontageandFacadesStandardsURL = "None";
         }
+
+        standards.put("frontageandFacadesStandardsURL", frontageandFacadesStandardsURL);
       }
 
       pst.close();
@@ -162,11 +169,14 @@ public class ProcessRequest {
 
     }
 
-    if (generalStandardURL == null)
-      return noDevelopmentStandards;
+    if (standards.isEmpty()) {
+      standards.put("generalStandardURL", "No development standards were found.");
+      standards.put("additionalStandardURL", "No development standards were found.");
+      standards.put("gardenStandardURL", "No development standards were found.");
+      standards.put("frontageandFacadesStandardsURL", "No development standards were found.");
+    }
 
-    return generalStandardURL + " " + additionalStandardURL + " " + gardenStandardURL + " "
-        + frontageandFacadesStandardsURL;
+    return standards;
 
   }
 
