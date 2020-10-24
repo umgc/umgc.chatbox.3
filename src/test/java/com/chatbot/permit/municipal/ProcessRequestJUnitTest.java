@@ -40,20 +40,20 @@ public class ProcessRequestJUnitTest {
 
   @Test
   public void retrievePermitInfo() throws Exception {
-    assertEquals(new ProcessRequest().retrieveRegulationInfo("ECSP-CG-1", "Fencing"),
+    assertEquals(new ProcessRequest("localhost", "root", "5mLQ9F!mZeGxI1!JBOi2p&wXcgn3O3*6").retrieveRegulationInfo("ECSP-CG-1", "Fencing"),
         "https://www.cityofpasadena.net/wp-content/uploads/sites/30/Zoning-Permit-Application.pdf?v=1602628892503");
   }
 
   @Test
   public void retrieveRegulationInfoTest() throws Exception {
-    assertEquals(new ProcessRequest().retrieveRegulationInfo("ECSP-CG-1", "Short Term Rental"),
+    assertEquals(new ProcessRequest("localhost", "root", "5mLQ9F!mZeGxI1!JBOi2p&wXcgn3O3*6").retrieveRegulationInfo("ECSP-CG-1", "Short Term Rental"),
         "https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT17_ZONING_CODE_ART5STSPLAUS_CH17.50STSPLAUS_17.50.296SHRMRE");
   }
 
 
   @Test
   public void retrieveDevelopmentStandardsInfoTest() throws Exception {
-    assertEquals(new ProcessRequest().retrieveDevelopmentStandardsInfo("ECSP-CG-1"),
+    assertEquals(new ProcessRequest("localhost", "root", "5mLQ9F!mZeGxI1!JBOi2p&wXcgn3O3*6").retrieveDevelopmentStandardsInfo("ECSP-CG-1"),
         "General Development Standards: https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT17_ZONING_CODE_ART3SPPLST_CH17.31EACOSPPL_17.31.050ECGEDEST Additional development standards: None Garden standards: None Frontage and facades standards: None");
   }
 

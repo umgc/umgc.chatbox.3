@@ -6,7 +6,7 @@ public class WatsonArguments {
     private String action;
     private String object;
     private String type;
-    private String zoneID;
+    private int zoneID;
 
     public String getStreet1() {
         return street1;
@@ -48,11 +48,11 @@ public class WatsonArguments {
         this.type = type;
     }
 
-    public String getZoneID() {
+    public int getZoneID() {
         return zoneID;
     }
 
-    public void setZoneID(String zoneID) {
+    public void setZoneID(int zoneID) {
         this.zoneID = zoneID;
     }
 }

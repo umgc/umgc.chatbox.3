@@ -1,5 +1,6 @@
 package com.chatbot.permit.municipal.controller;
 
+import com.chatbot.permit.municipal.db.ProcessRequest;
 import com.chatbot.permit.municipal.domain.WatsonArguments;
 import com.chatbot.permit.municipal.repository.MapsRepository;
 import com.chatbot.permit.municipal.repository.PolygonsRepository;
@@ -32,6 +33,12 @@ public class MainController {
   private String city;
   @Value("${address.state}")
   private String state;
+  @Value("${spring.datasource.url}")
+  private String host;
+  @Value("${spring.datasource.username}")
+  private String userName;
+  @Value("${spring.datasource.password}")
+  private String password;
   private MapHandler mapHandler;
 
   @PostConstruct
@@ -51,6 +58,10 @@ public class MainController {
         response.put("zoneID", av.verifyAddress(watsonArguments.getStreet1()));
         break;
       case "retrieveInformation":
+        String zoneCode = polygonsRepository.findZONECODEByPOLYGONID(watsonArguments.getZoneID());
+        ProcessRequest pr = new ProcessRequest(host, userName, password);
+        String link = pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode);
+        response.put("link", link);
         break;
     }
 

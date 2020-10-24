@@ -1,9 +1,5 @@
 package com.chatbot.permit.municipal.db;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,21 +14,15 @@ import java.sql.SQLException;
  * connection to the mySQL database
  */
 
-@Component
 public class DBConnection {
-
-  @Value("${spring.datasource.url}")
-  private String host;
-
-  @Value("${spring.datasource.username}")
-  private String userName;
-
-  @Value("${spring.datasource.password}")
-  private String password;
 
   private Connection conn;
 
-  public Connection Connect() {
+  public DBConnection(String host, String userName, String password) {
+    this.connect(host, userName, password);
+  }
+
+  public void connect(String host, String userName, String password) {
     try {
 
       this.conn = DriverManager.getConnection(host, userName, password);
@@ -42,7 +32,6 @@ public class DBConnection {
       err.printStackTrace();
 
     }
-    return null;
   }
 
   public Connection getConn() {
