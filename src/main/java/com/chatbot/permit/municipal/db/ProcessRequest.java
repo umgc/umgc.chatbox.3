@@ -8,6 +8,7 @@ package com.chatbot.permit.municipal.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -95,9 +96,9 @@ public class ProcessRequest {
    */
 
   @Autowired
-  public String retrieveDevelopmentStandardsInfo(String zoneID) {
+  public HashMap retrieveDevelopmentStandardsInfo(String zoneID) {
 
-    String noDevelopmentStandards = "No development standards were found.";
+    HashMap <String, String> standards = new HashMap<>();
     String generalStandardURL = null;
     String additionalStandardURL = null;
     String gardenStandardURL = null;
@@ -110,32 +111,34 @@ public class ProcessRequest {
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
-        generalStandardURL =
-            "General Development Standards: " + rs.getString("general_standard_url");
+        generalStandardURL = rs.getString("general_standard_url");
+        
+        standards.put("generalStandardURL", generalStandardURL);
+        
         additionalStandardURL = rs.getString("additional_standard_url");
 
         if (rs.wasNull()) {
-          additionalStandardURL = "Additional development standards: None";
-        } else {
-          additionalStandardURL = "Additional development standards: " + additionalStandardURL;
+          additionalStandardURL = "None";
         }
+        
+        standards.put("additionalStandardURL", additionalStandardURL);
 
         gardenStandardURL = rs.getString("garden_standard_url");
 
         if (rs.wasNull()) {
-          gardenStandardURL = "Garden standards: None";
-        } else {
-          gardenStandardURL = "Garden standards: " + gardenStandardURL;
+          gardenStandardURL = "None";
         }
+        
+        standards.put("gardenStandardURL", gardenStandardURL);
 
         frontageandFacadesStandardsURL = rs.getString("frontage_and_facades_standards_url");
 
         if (rs.wasNull()) {
-          frontageandFacadesStandardsURL = "Frontage and facades standards: None";
-        } else {
-          frontageandFacadesStandardsURL =
-              "Frontage and facades standards: " + frontageandFacadesStandardsURL;
+          frontageandFacadesStandardsURL = "None";
         }
+        
+        standards.put("frontageandFacadesStandardsURL", frontageandFacadesStandardsURL);
+        
       }
 
       pst.close();
@@ -145,11 +148,14 @@ public class ProcessRequest {
 
     }
 
-    if (generalStandardURL == null)
-      return noDevelopmentStandards;
+    if (standards.isEmpty()) {
+      standards.put("generalStandardURL", "No development standards were found.");
+      standards.put("additionalStandardURL", "No development standards were found.");
+      standards.put("gardenStandardURL", "No development standards were found.");
+      standards.put("frontageandFacadesStandardsURL", "No development standards were found.");
+    }
 
-    return generalStandardURL + " " + additionalStandardURL + " " + gardenStandardURL + " "
-        + frontageandFacadesStandardsURL;
+    return standards;
 
   }
 
