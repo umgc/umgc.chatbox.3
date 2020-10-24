@@ -58,7 +58,14 @@ public class MainController {
         response.put("zoneID", av.verifyAddress(watsonArguments.getStreet1()));
         break;
       case "retrieveInformation":
-        String zoneCode = polygonsRepository.findZONECODEByPOLYGONID(watsonArguments.getZoneID());
+        int zoneId = watsonArguments.getZoneID();
+        // zoneID is 0 if Watson doesn't include it in the request
+        if (zoneId == 0) {
+          AddressVerification addressVerification =
+                  new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
+          zoneId = addressVerification.verifyAddress(watsonArguments.getStreet1());
+        }
+        String zoneCode = polygonsRepository.findZONECODEByPOLYGONID(zoneId);
         ProcessRequest pr = new ProcessRequest(host, userName, password);
         String link = pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode);
         response.put("link", link);

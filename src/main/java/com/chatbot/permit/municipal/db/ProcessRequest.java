@@ -5,8 +5,6 @@ package com.chatbot.permit.municipal.db;
  */
 
 
-import org.springframework.stereotype.Component;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -95,14 +93,14 @@ public class ProcessRequest {
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
-        procedureUrl = rs.getString("application_url");
+        procedureUrl = rs.getString("procedure_url");
       }
 
       pst.close();
       this.dbConnection.getConn().close();
 
     } catch (Exception e) {
-
+      e.printStackTrace();
     }
 
     return procedureUrl;
@@ -124,7 +122,7 @@ public class ProcessRequest {
     String frontageandFacadesStandardsURL = null;
 
     try {
-      String sql = "select * from development_standards ds where ds.zone_id='" + zoneID + "')";
+      String sql = "select * from development_standards ds where ds.zone_id='" + zoneID + "'";
       PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
       ResultSet rs = pst.executeQuery();
 
