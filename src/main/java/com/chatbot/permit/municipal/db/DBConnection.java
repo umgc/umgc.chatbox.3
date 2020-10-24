@@ -1,11 +1,12 @@
 package com.chatbot.permit.municipal.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  *
@@ -21,27 +22,34 @@ import org.springframework.stereotype.Component;
 public class DBConnection {
 
   @Value("${spring.datasource.url}")
-  private static String host;
+  private String host;
 
   @Value("${spring.datasource.username}")
-  private static String userName;
+  private String userName;
 
   @Value("${spring.datasource.password}")
-  private static String password;
+  private String password;
 
-  @Autowired
-  protected static Connection Connect() {
+  private Connection conn;
+
+  public Connection Connect() {
     try {
 
-      Connection conn = DriverManager.getConnection(host, userName, password);
-      return conn;
+      this.conn = DriverManager.getConnection(host, userName, password);
 
     } catch (SQLException err) {
 
-      System.out.println(err.getMessage());
+      err.printStackTrace();
 
     }
     return null;
   }
 
+  public Connection getConn() {
+    return conn;
+  }
+
+  public void setConn(Connection conn) {
+    this.conn = conn;
+  }
 }

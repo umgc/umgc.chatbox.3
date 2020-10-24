@@ -3,6 +3,10 @@ package com.chatbot.permit.municipal.domain;
 public class WatsonArguments {
     private String street1;
     private String webhookType;
+    private String action;
+    private String object;
+    private String type;
+    private String zoneID;
 
     public String getStreet1() {
         return street1;
@@ -18,5 +22,37 @@ public class WatsonArguments {
 
     public void setWebhookType(String webhookType) {
         this.webhookType = webhookType;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getZoneID() {
+        return zoneID;
+    }
+
+    public void setZoneID(String zoneID) {
+        this.zoneID = zoneID;
     }
 }

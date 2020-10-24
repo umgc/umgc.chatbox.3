@@ -49,6 +49,9 @@ public class MainController {
         AddressVerification av =
             new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
         response.put("zoneID", av.verifyAddress(watsonArguments.getStreet1()));
+        break;
+      case "retrieveInformation":
+        break;
     }
 
     return response;

@@ -5,11 +5,11 @@ package com.chatbot.permit.municipal.db;
  */
 
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -18,6 +18,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessRequest {
 
+  private DBConnection dbConnection;
+
+  public ProcessRequest() {
+    this.dbConnection = new DBConnection();
+  }
+
   /**
    * 
    * @param zoneID should be given to the method by Watson
@@ -25,7 +31,6 @@ public class ProcessRequest {
    * @param return is the Permit application URL stored in the DB
    */
 
-  @Autowired
   public String retrievePermitInfo(String zoneID, String permitDescription) {
 
     String applicationUrl = "No permit information found.";
@@ -34,8 +39,7 @@ public class ProcessRequest {
       String sql =
           "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
               + permitDescription + "' and (alu.zone_id='" + zoneID + "' or alu.zone_id='ALL')";
-      Connection conn = DBConnection.Connect();
-      PreparedStatement pst = conn.prepareStatement(sql);
+      PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -43,7 +47,7 @@ public class ProcessRequest {
       }
 
       pst.close();
-      conn.close();
+      this.dbConnection.getConn().close();
 
     } catch (Exception e) {
 
@@ -60,7 +64,6 @@ public class ProcessRequest {
    * @param return is the regulation application URL stored in the DB
    */
 
-  @Autowired
   public String retrieveRegulationInfo(String zoneID, String permitDescription) {
 
     String procedureUrl = "No regulation information found.";
@@ -69,8 +72,7 @@ public class ProcessRequest {
       String sql =
           "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
               + permitDescription + "' and (alu.zone_id='" + zoneID + "' or alu.zone_id='ALL')";
-      Connection conn = DBConnection.Connect();
-      PreparedStatement pst = conn.prepareStatement(sql);
+      PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -78,7 +80,7 @@ public class ProcessRequest {
       }
 
       pst.close();
-      conn.close();
+      this.dbConnection.getConn().close();
 
     } catch (Exception e) {
 
@@ -94,7 +96,6 @@ public class ProcessRequest {
    * @return returns various development standard URLs associated with the zoneID
    */
 
-  @Autowired
   public String retrieveDevelopmentStandardsInfo(String zoneID) {
 
     String noDevelopmentStandards = "No development standards were found.";
@@ -105,8 +106,7 @@ public class ProcessRequest {
 
     try {
       String sql = "select * from development_standards ds where ds.zone_id='" + zoneID + "')";
-      Connection conn = DBConnection.Connect();
-      PreparedStatement pst = conn.prepareStatement(sql);
+      PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -139,7 +139,7 @@ public class ProcessRequest {
       }
 
       pst.close();
-      conn.close();
+      this.dbConnection.getConn().close();
 
     } catch (Exception e) {
 
