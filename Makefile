@@ -18,7 +18,7 @@ BUILD_IMG=docker.io/umgccaps/advance-development-factory:latest
 BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Maven options
-MAVEN_OPTS:=-Dversion=$(VERSION) -Dmaven.test.skip=true
+MAVEN_OPTS:=-Dversion=$(VERSION)
 
 # Unique ID used for devel Azure deployments
 UUID_FILENAME:=user.uuid
