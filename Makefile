@@ -6,7 +6,8 @@
 SKIP_TESTS:=
 
 # Version vars
-VERSION:=1.0.$(shell git rev-list HEAD | wc -l)
+#VERSION:=1.0.$(shell git rev-list HEAD | wc -l)
+VERSION:=1.0.30
 MUNICIPALPERMITCHABOT_JAR=MunicipalPermitChabot-1.0.0.jar
 
 # Docker vars
@@ -18,7 +19,7 @@ BUILD_IMG=docker.io/umgccaps/advance-development-factory:latest
 BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Maven options
-MAVEN_OPTS:=-Dversion=$(VERSION)
+MAVEN_OPTS:=-Dversion=$(VERSION) -Dmaven.test.skip=true
 
 # Unique ID used for devel Azure deployments
 UUID_FILENAME:=user.uuid
@@ -28,8 +29,10 @@ UUID:=$(shell cat $(UUID_FILENAME) 2> /dev/null || (uuidgen | sed s/'-'/''/g | h
 
 BUILD_ARGS=--build-arg MAPQUEST_APIKEY=$(MAPQUEST_APIKEY)
 BUILD_ARGS+=--build-arg DB_USER=$(DB_USER)
-BUILD_ARGS+=--build-arg DB_PASS=$(DB_PASS)
+BUILD_ARGS+=--build-arg DB_PASS="${DB_PASS}"
 BUILD_ARGS+=--build-arg DB_URL=$(DB_URL)
+BUILD_ARGS+=--build-arg ADDRESS_CITY=$(ADDRESS_CITY)
+BUILD_ARGS+=--build-arg ADDRESS_STATE=$(ADDRESS_STATE)
 BUILD_ARGS+=--build-arg VERSION=$(VERSION)
 BUILD_ARGS+=--build-arg MUNICIPALPERMITCHABOT_APP=$(MUNICIPALPERMITCHABOT_JAR)
 
