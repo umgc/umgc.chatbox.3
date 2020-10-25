@@ -6,8 +6,7 @@
 SKIP_TESTS:=
 
 # Version vars
-#VERSION:=1.0.$(shell git rev-list HEAD | wc -l)
-VERSION:=1.0.30
+VERSION:=1.0.$(shell git rev-list HEAD | wc -l)
 MUNICIPALPERMITCHABOT_JAR=MunicipalPermitChabot-1.0.0.jar
 
 # Docker vars
@@ -40,7 +39,7 @@ BUILD_ARGS+=--build-arg MUNICIPALPERMITCHABOT_APP=$(MUNICIPALPERMITCHABOT_JAR)
 # Skip test flag
 # make all SKIP_TESTS=y <- doest not run unit tests
 ifdef SKIP_TESTS
-	MAVEN_OPTS:=$(MAVEN_OPTS) -Dmaven.test.skip=true
+	MAVEN_OPTS:=$(MAVEN_OPTS)
 endif
 
 export VERSION
