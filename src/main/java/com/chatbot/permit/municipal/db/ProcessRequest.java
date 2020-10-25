@@ -21,6 +21,11 @@ public class ProcessRequest {
     this.dbConnection = new DBConnection(host, userName, password);
   }
 
+  public ProcessRequest(DBConnection dbConnection) {
+    // connection for unit tests
+    this.dbConnection = dbConnection;
+  }
+
   public HashMap<String, String> retrieveInformation(String type, String action, String object, String zoneID) {
     HashMap<String, String> links;
     String permitDescription = action + " " + object;

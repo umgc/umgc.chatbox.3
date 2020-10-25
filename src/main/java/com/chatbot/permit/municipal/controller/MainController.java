@@ -69,6 +69,8 @@ public class MainController {
         ProcessRequest pr = new ProcessRequest(host, userName, password);
         response = new JSONObject(pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode));
         break;
+      default:
+        response.put("error", "Missing required webhookType parameter");
     }
 
     return response;
