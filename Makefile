@@ -39,7 +39,7 @@ BUILD_ARGS+=--build-arg MUNICIPALPERMITCHABOT_APP=$(MUNICIPALPERMITCHABOT_JAR)
 # Skip test flag
 # make all SKIP_TESTS=y <- doest not run unit tests
 ifdef SKIP_TESTS
-	MAVEN_OPTS:=$(MAVEN_OPTS)
+	MAVEN_OPTS:=$(MAVEN_OPTS) -Dmaven.test.skip=true
 endif
 
 export VERSION
