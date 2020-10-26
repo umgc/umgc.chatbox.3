@@ -69,6 +69,18 @@ public class MainController {
         ProcessRequest pr = new ProcessRequest(host, userName, password);
         response = new JSONObject(pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode));
         break;
+      case "retrieveStandard":
+        int zoneID = watsonArguments.getZoneID();
+        // zoneID is 0 if Watson doesn't include it in the request
+        if (zoneID == 0) {
+          AddressVerification addressVerification =
+                  new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
+          zoneID = addressVerification.verifyAddress(watsonArguments.getStreet1());
+        }
+        String zoneCodeName = polygonsRepository.findZONECODEByPOLYGONID(zoneID);
+        ProcessRequest processRequest = new ProcessRequest(host, userName, password);
+        response = new JSONObject(processRequest.retrieveDevelopmentStandardsInfo(zoneCodeName));
+        break;
       default:
         response.put("error", "Missing required webhookType parameter");
     }

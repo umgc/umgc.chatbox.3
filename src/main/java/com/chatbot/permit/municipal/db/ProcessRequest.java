@@ -37,9 +37,6 @@ public class ProcessRequest {
       case "regulation":
         links = this.retrieveRegulationInfo(zoneID, permitDescription);
         break;
-      case "developmentStandards":
-        links = this.retrieveDevelopmentStandardsInfo(zoneID);
-        break;
       default:
         links = null;
     }
