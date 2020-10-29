@@ -6,8 +6,7 @@
 SKIP_TESTS:=
 
 # Version vars
-#VERSION:=1.0.$(shell git rev-list HEAD | wc -l)
-VERSION:=1.0.30
+VERSION:=1.0.$(shell git rev-list HEAD | wc -l)
 MUNICIPALPERMITCHABOT_JAR=MunicipalPermitChabot-1.0.0.jar
 
 # Docker vars
@@ -19,7 +18,7 @@ BUILD_IMG=docker.io/umgccaps/advance-development-factory:latest
 BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Maven options
-MAVEN_OPTS:=-Dversion=$(VERSION) -Dmaven.test.skip=true
+MAVEN_OPTS:=-Dversion=$(VERSION)
 
 # Unique ID used for devel Azure deployments
 UUID_FILENAME:=user.uuid

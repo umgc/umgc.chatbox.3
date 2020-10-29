@@ -50,6 +50,14 @@ public class MainController {
       consumes = "application/json", produces = "application/json")
   public JSONObject main(@RequestBody WatsonArguments watsonArguments) throws Exception {
     JSONObject response = new JSONObject();
+    int zoneId = watsonArguments.getZoneID();
+
+    // zoneID is 0 if Watson doesn't include it in the request
+    if (zoneId == 0) {
+      AddressVerification addressVerification =
+              new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
+      zoneId = addressVerification.verifyAddress(watsonArguments.getStreet1());
+    }
 
     switch (watsonArguments.getWebhookType()) {
       case "verifyAddress":
@@ -58,28 +66,18 @@ public class MainController {
         response.put("zoneID", av.verifyAddress(watsonArguments.getStreet1()));
         break;
       case "retrieveInformation":
-        int zoneId = watsonArguments.getZoneID();
-        // zoneID is 0 if Watson doesn't include it in the request
-        if (zoneId == 0) {
-          AddressVerification addressVerification =
-                  new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
-          zoneId = addressVerification.verifyAddress(watsonArguments.getStreet1());
-        }
-        String zoneCode = polygonsRepository.findZONECODEByPOLYGONID(zoneId);
-        ProcessRequest pr = new ProcessRequest(host, userName, password);
-        response = new JSONObject(pr.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCode));
+        String zoneCodeInformation = polygonsRepository.findZONECODEByPOLYGONID(zoneId);
+        ProcessRequest processRequestRetrieveInformation = new ProcessRequest(host, userName, password);
+        response = new JSONObject(processRequestRetrieveInformation.retrieveInformation(watsonArguments.getType(), watsonArguments.getAction(), watsonArguments.getObject(), zoneCodeInformation));
+        break;
+      case "retrieveZoneSymbol":
+        ProcessRequest processRequestRetrieveZoneSymbol = new ProcessRequest(host, userName, password);
+        response = new JSONObject(processRequestRetrieveZoneSymbol.retrieveZoneSymbol(zoneId));
         break;
       case "retrieveStandard":
-        int zoneID = watsonArguments.getZoneID();
-        // zoneID is 0 if Watson doesn't include it in the request
-        if (zoneID == 0) {
-          AddressVerification addressVerification =
-                  new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
-          zoneID = addressVerification.verifyAddress(watsonArguments.getStreet1());
-        }
-        String zoneCodeName = polygonsRepository.findZONECODEByPOLYGONID(zoneID);
-        ProcessRequest processRequest = new ProcessRequest(host, userName, password);
-        response = new JSONObject(processRequest.retrieveDevelopmentStandardsInfo(zoneCodeName));
+        String zoneCodeStandard = polygonsRepository.findZONECODEByPOLYGONID(zoneId);
+        ProcessRequest processRequestRetrieveStandard = new ProcessRequest(host, userName, password);
+        response = new JSONObject(processRequestRetrieveStandard.retrieveDevelopmentStandardsInfo(zoneCodeStandard));
         break;
       default:
         response.put("error", "Missing required webhookType parameter");
