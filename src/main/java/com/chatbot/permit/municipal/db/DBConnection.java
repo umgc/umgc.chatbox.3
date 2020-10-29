@@ -1,5 +1,8 @@
 package com.chatbot.permit.municipal.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,6 +20,7 @@ import java.sql.SQLException;
 public class DBConnection {
 
   private Connection conn;
+  Logger logger = LoggerFactory.getLogger(DBConnection.class);
 
   public DBConnection(String host, String userName, String password) {
     this.connect(host, userName, password);
@@ -28,9 +32,7 @@ public class DBConnection {
       this.conn = DriverManager.getConnection(host, userName, password);
 
     } catch (SQLException err) {
-
-      err.printStackTrace();
-
+      logger.error("context", err);
     }
   }
 

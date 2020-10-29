@@ -71,8 +71,19 @@ public class ProcessRequestJUnitTest {
   public void retrievePermitInfo() throws Exception {
     HashMap<String, String> expectedValue = new HashMap<String, String>();
     expectedValue.put("permitUrl", "Private: https://www.cityofpasadena.net/wp-content/uploads/sites/30/Zoning-Permit-Application.pdf?v=1602628892503 or Public: https://ww5.cityofpasadena.net/planning/wp-content/uploads/sites/56/2017/09/Tree-Removal-Public.pdf");
-    String sqlStml = "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
-            + "remove tree' and (alu.zone_id='OS' or alu.zone_id='ALL')";
+    String sqlStml = "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
+    when(resultSet.next()).thenReturn(true).thenReturn(false);
+    when(resultSet.getString("application_url")).thenReturn("Private: https://www.cityofpasadena.net/wp-content/uploads/sites/30/Zoning-Permit-Application.pdf?v=1602628892503 or Public: https://ww5.cityofpasadena.net/planning/wp-content/uploads/sites/56/2017/09/Tree-Removal-Public.pdf");
+    when(preparedStatement.executeQuery()).thenReturn(resultSet);
+    when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
+    assertEquals(expectedValue, new ProcessRequest(dbConnection).retrievePermitInfo("OS", "remove tree"));
+  }
+
+  @Test
+  public void retrieveInformationPermitCase() throws Exception {
+    HashMap<String, String> expectedValue = new HashMap<String, String>();
+    expectedValue.put("permitUrl", "Private: https://www.cityofpasadena.net/wp-content/uploads/sites/30/Zoning-Permit-Application.pdf?v=1602628892503 or Public: https://ww5.cityofpasadena.net/planning/wp-content/uploads/sites/56/2017/09/Tree-Removal-Public.pdf");
+    String sqlStml = "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
     when(resultSet.next()).thenReturn(true).thenReturn(false);
     when(resultSet.getString("application_url")).thenReturn("Private: https://www.cityofpasadena.net/wp-content/uploads/sites/30/Zoning-Permit-Application.pdf?v=1602628892503 or Public: https://ww5.cityofpasadena.net/planning/wp-content/uploads/sites/56/2017/09/Tree-Removal-Public.pdf");
     when(preparedStatement.executeQuery()).thenReturn(resultSet);
@@ -84,8 +95,7 @@ public class ProcessRequestJUnitTest {
   public void retrieveRegulationInfoTest() throws Exception {
     HashMap<String, String> expectedValue = new HashMap<String, String>();
     expectedValue.put("regulationUrl", "https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT8HESA_CH8.52CITRTRPROR_8.52.070PRPRTRRELATRPRPEPP");
-    String sqlStml = "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
-            + "remove tree' and (alu.zone_id='OS' or alu.zone_id='ALL')";
+    String sqlStml = "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
     when(resultSet.next()).thenReturn(true).thenReturn(false);
     when(resultSet.getString("procedure_url")).thenReturn("https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT8HESA_CH8.52CITRTRPROR_8.52.070PRPRTRRELATRPRPEPP");
     when(preparedStatement.executeQuery()).thenReturn(resultSet);
@@ -101,7 +111,7 @@ public class ProcessRequestJUnitTest {
     expectedValue.put("frontageandFacadesStandardsURL", "None");
     expectedValue.put("generalStandardURL", "https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT17_ZONING_CODE_ART2ZODIALLAUSZOECST_CH17.26SPPUZODI_17.26.040SPPUDIGEDEST");
     expectedValue.put("gardenStandardURL", "None");
-    String sqlStml = "select * from development_standards ds where ds.zone_id='OS'";
+    String sqlStml = "select * from development_standards ds where ds.zone_id= ?";
     when(resultSet.wasNull()).thenReturn(true).thenReturn(true).thenReturn(true);
     when(resultSet.next()).thenReturn(true).thenReturn(false);
     when(resultSet.getString("additional_standard_url")).thenReturn(null);
@@ -112,7 +122,4 @@ public class ProcessRequestJUnitTest {
     when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
     assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveDevelopmentStandardsInfo("OS"));
   }
-
-
-
 }

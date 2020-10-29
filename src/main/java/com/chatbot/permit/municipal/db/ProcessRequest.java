@@ -5,9 +5,14 @@ package com.chatbot.permit.municipal.db;
  */
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -16,6 +21,8 @@ import java.util.HashMap;
 public class ProcessRequest {
 
   private DBConnection dbConnection;
+  Logger logger = LoggerFactory.getLogger(ProcessRequest.class);
+  private static final String loggerContext = "context";
 
   public ProcessRequest(String host, String userName, String password) {
     this.dbConnection = new DBConnection(host, userName, password);
@@ -26,16 +33,16 @@ public class ProcessRequest {
     this.dbConnection = dbConnection;
   }
 
-  public HashMap<String, String> retrieveInformation(String type, String action, String object, String zoneID) {
+  public Map<String, String> retrieveInformation(String type, String action, String object, String zoneID) throws SQLException {
     HashMap<String, String> links;
     String permitDescription = action + " " + object;
 
     switch (type) {
       case "permit":
-        links = this.retrievePermitInfo(zoneID, permitDescription);
+        links = (HashMap<String, String>) this.retrievePermitInfo(zoneID, permitDescription);
         break;
       case "regulation":
-        links = this.retrieveRegulationInfo(zoneID, permitDescription);
+        links = (HashMap<String, String>) this.retrieveRegulationInfo(zoneID, permitDescription);
         break;
       default:
         links = null;
@@ -51,16 +58,18 @@ public class ProcessRequest {
    * @return is the Permit application URL stored in the DB
    */
 
-  public HashMap<String, String> retrievePermitInfo(String zoneID, String permitDescription) {
+  public Map<String, String> retrievePermitInfo(String zoneID, String permitDescription) throws SQLException {
 
-    HashMap<String, String> appUrlHashMap = new HashMap<String, String>();
+    HashMap<String, String> appUrlHashMap = new HashMap<>();
     String applicationUrl = "No permit information found.";
+    PreparedStatement pst = null;
 
     try {
       String sql =
-          "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
-              + permitDescription + "' and (alu.zone_id='" + zoneID + "' or alu.zone_id='ALL')";
-      PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
+          "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
+      pst = this.dbConnection.getConn().prepareStatement(sql);
+      pst.setString(1, permitDescription);
+      pst.setString(2, zoneID);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -71,7 +80,12 @@ public class ProcessRequest {
       this.dbConnection.getConn().close();
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(loggerContext, e);
+    } finally {
+      if(pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
     appUrlHashMap.put("permitUrl", applicationUrl);
@@ -86,27 +100,30 @@ public class ProcessRequest {
    * @return is the regulation application URL stored in the DB
    */
 
-  public HashMap<String, String> retrieveRegulationInfo(String zoneID, String permitDescription) {
+  public Map<String, String> retrieveRegulationInfo(String zoneID, String permitDescription) throws SQLException {
 
-    HashMap<String, String> procedureUrlHashMap = new HashMap<String, String>();
+    HashMap<String, String> procedureUrlHashMap = new HashMap<>();
     String procedureUrl = "No regulation information found.";
+    PreparedStatement pst = null;
 
     try {
       String sql =
-          "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
-              + permitDescription + "' and (alu.zone_id='" + zoneID + "' or alu.zone_id='ALL')";
-      PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
+          "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
+      pst = this.dbConnection.getConn().prepareStatement(sql);
+      pst.setString(1, permitDescription);
+      pst.setString(2, zoneID);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
         procedureUrl = rs.getString("procedure_url");
       }
-
-      pst.close();
-      this.dbConnection.getConn().close();
-
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(loggerContext, e);
+    } finally {
+      if(pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
     procedureUrlHashMap.put("regulationUrl", procedureUrl);
@@ -120,7 +137,7 @@ public class ProcessRequest {
    * @return returns various development standard URLs associated with the zoneID
    */
 
-  public HashMap<String, String> retrieveDevelopmentStandardsInfo(String zoneID) {
+  public Map<String, String> retrieveDevelopmentStandardsInfo(String zoneID) throws SQLException {
 
     HashMap <String, String> standards = new HashMap<>();
     String noDevelopmentStandards = "No development standards were found.";
@@ -128,10 +145,12 @@ public class ProcessRequest {
     String additionalStandardURL = null;
     String gardenStandardURL = null;
     String frontageandFacadesStandardsURL = null;
+    PreparedStatement pst = null;
 
     try {
-      String sql = "select * from development_standards ds where ds.zone_id='" + zoneID + "'";
-      PreparedStatement pst = this.dbConnection.getConn().prepareStatement(sql);
+      String sql = "select * from development_standards ds where ds.zone_id= ?";
+      pst = this.dbConnection.getConn().prepareStatement(sql);
+      pst.setString(1, zoneID);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -163,19 +182,20 @@ public class ProcessRequest {
 
         standards.put("frontageandFacadesStandardsURL", frontageandFacadesStandardsURL);
       }
-
-      pst.close();
-      this.dbConnection.getConn().close();
-
     } catch (Exception e) {
-
+      logger.error(loggerContext, e);
+    } finally {
+      if(pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
     if (standards.isEmpty()) {
-      standards.put("generalStandardURL", "No development standards were found.");
-      standards.put("additionalStandardURL", "No development standards were found.");
-      standards.put("gardenStandardURL", "No development standards were found.");
-      standards.put("frontageandFacadesStandardsURL", "No development standards were found.");
+      standards.put("generalStandardURL", noDevelopmentStandards);
+      standards.put("additionalStandardURL", noDevelopmentStandards);
+      standards.put("gardenStandardURL", noDevelopmentStandards);
+      standards.put("frontageandFacadesStandardsURL", noDevelopmentStandards);
     }
 
     return standards;
