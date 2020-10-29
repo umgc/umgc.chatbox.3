@@ -75,7 +75,7 @@ public class ProcessRequest {
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
-        procedureUrl = rs.getString("application_url");
+        procedureUrl = rs.getString("procedure_url");
       }
 
       pst.close();
@@ -98,7 +98,7 @@ public class ProcessRequest {
   @Autowired
   public HashMap retrieveDevelopmentStandardsInfo(String zoneID) {
 
-    HashMap <String, String> standards = new HashMap<>();
+    HashMap<String, String> standards = new HashMap<>();
     String generalStandardURL = null;
     String additionalStandardURL = null;
     String gardenStandardURL = null;
@@ -112,15 +112,15 @@ public class ProcessRequest {
 
       while (rs.next()) {
         generalStandardURL = rs.getString("general_standard_url");
-        
+
         standards.put("generalStandardURL", generalStandardURL);
-        
+
         additionalStandardURL = rs.getString("additional_standard_url");
 
         if (rs.wasNull()) {
           additionalStandardURL = "None";
         }
-        
+
         standards.put("additionalStandardURL", additionalStandardURL);
 
         gardenStandardURL = rs.getString("garden_standard_url");
@@ -128,7 +128,7 @@ public class ProcessRequest {
         if (rs.wasNull()) {
           gardenStandardURL = "None";
         }
-        
+
         standards.put("gardenStandardURL", gardenStandardURL);
 
         frontageandFacadesStandardsURL = rs.getString("frontage_and_facades_standards_url");
@@ -136,9 +136,9 @@ public class ProcessRequest {
         if (rs.wasNull()) {
           frontageandFacadesStandardsURL = "None";
         }
-        
+
         standards.put("frontageandFacadesStandardsURL", frontageandFacadesStandardsURL);
-        
+
       }
 
       pst.close();
@@ -158,6 +158,32 @@ public class ProcessRequest {
     return standards;
 
   }
+
+  @Autowired
+  public String retrieveZoneSymbol(String polygonID) {
+
+    String zoneSymbol = "None";
+
+    try {
+      String sql = "select z.zone_symbol from polygons p where p.POLYGON_ID='" + polygonID
+          + "' join zone z on p.zone_code = z.zone_symbol;";
+      Connection conn = DBConnection.Connect();
+      PreparedStatement pst = conn.prepareStatement(sql);
+      ResultSet rs = pst.executeQuery();
+
+      while (rs.next()) {
+        zoneSymbol = rs.getString("zone_symbol");
+      }
+
+      pst.close();
+      conn.close();
+    } catch (Exception e) {
+
+    }
+
+    return zoneSymbol;
+  }
+
 
 
 }
