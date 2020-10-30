@@ -52,7 +52,6 @@ public class MainController {
     JSONObject response = new JSONObject();
     int zoneId = watsonArguments.getZoneID();
 
-
     // zoneID is 0 if Watson doesn't include it in the request
     if (zoneId == 0) {
       AddressVerification addressVerification =
