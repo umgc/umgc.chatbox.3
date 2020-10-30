@@ -55,4 +55,13 @@ public class WatsonArguments {
     public void setZoneID(int zoneID) {
         this.zoneID = zoneID;
     }
+
+    public String toString() {
+        return "action: " + this.getAction() + "\n" +
+                "object: " + this.getObject() + "\n" +
+                "type: " + this.getType() + "\n" +
+                "zoneID: " + this.getZoneID() + "\n" +
+                "street1: " + this.getStreet1() + "\n" +
+                "webhookType: " + this.getWebhookType() + "\n";
+    }
 }

@@ -8,6 +8,8 @@ import com.chatbot.permit.municipal.service.ParsingService;
 import com.chatbot.permit.municipal.watsonactions.AddressVerification;
 import com.chatbot.permit.municipal.zones.MapHandler;
 import net.minidev.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,8 @@ public class MainController {
   private String password;
   private MapHandler mapHandler;
 
+  Logger logger = LoggerFactory.getLogger(MainController.class);
+
   @PostConstruct
   public void initMapHandler() {
     this.mapHandler = new MapHandler(polygonsRepository, mapsRepository);
@@ -49,8 +53,10 @@ public class MainController {
   @RequestMapping(value = "/umgcchatbot", method = RequestMethod.POST,
       consumes = "application/json", produces = "application/json")
   public JSONObject main(@RequestBody WatsonArguments watsonArguments) throws Exception {
+    logger.info(watsonArguments.toString());
     JSONObject response = new JSONObject();
     int zoneId = watsonArguments.getZoneID();
+
 
     // zoneID is 0 if Watson doesn't include it in the request
     if (zoneId == 0) {
