@@ -165,8 +165,7 @@ public class ProcessRequest {
     String zoneSymbol = "None";
 
     try {
-      String sql = "select z.zone_symbol from polygons p where p.POLYGON_ID='" + polygonID
-          + "' join zone z on p.zone_code = z.zone_symbol;";
+      String sql = "select z.zone_symbol from polygons p join zone z on p.zone_code = z.zone_symbol where p.POLYGON_ID='" + polygonID + "';";
       Connection conn = DBConnection.Connect();
       PreparedStatement pst = conn.prepareStatement(sql);
       ResultSet rs = pst.executeQuery();
