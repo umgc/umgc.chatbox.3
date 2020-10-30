@@ -58,15 +58,6 @@ public class MapHandler {
   }
 
   /**
-   * This function returns a list of the custom ZonePolygon objects that are in the DB.
-   * 
-   * @return
-   */
-  public List<ZonePolygon> getMapZones() {
-    return mapZones;
-  }
-
-  /**
    * This function parses through a KML file and imports the contents into two tables. One table
    * stores the the ID, the zone, and the zone again as a note. The second table stores the ID, the
    * lat and lon, and the lat and lon converted to ints.

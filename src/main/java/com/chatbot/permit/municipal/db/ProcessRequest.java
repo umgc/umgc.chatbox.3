@@ -7,7 +7,6 @@ package com.chatbot.permit.municipal.db;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +35,7 @@ public class ProcessRequest {
 
   public Map<String, String> retrieveInformation(String type, String action, String object,
       String zoneID) throws SQLException {
+    System.out.println(type + " " + action + " " + object + " " + zoneID);
     HashMap<String, String> links;
     String permitDescription = action + " " + object;
 
