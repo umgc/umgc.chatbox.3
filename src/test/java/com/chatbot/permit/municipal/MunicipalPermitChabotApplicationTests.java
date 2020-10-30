@@ -189,9 +189,4 @@ class MunicipalPermitChabotApplicationTests {
         .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(content().json("{'zoneID': -1}"));
   }
-
-  @Test
-  public void retrievePermitInformation() {
-
-  }
 }
