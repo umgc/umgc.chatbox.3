@@ -88,7 +88,7 @@ public class ProcessRequestJUnitTest {
         when(resultSet.getString("application_url")).thenReturn("Private: https://www.cityofpasadena.net/wp-content/uploads/sites/30/Zoning-Permit-Application.pdf?v=1602628892503 or Public: https://ww5.cityofpasadena.net/planning/wp-content/uploads/sites/56/2017/09/Tree-Removal-Public.pdf");
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
-        assertEquals(expectedValue, new ProcessRequest(dbConnection).retrievePermitInfo("OS", "remove tree"));
+        assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveInformation("permit", "remove", "tree", "OS"));
     }
 
     @Test
@@ -103,6 +103,22 @@ public class ProcessRequestJUnitTest {
         assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveRegulationInfo("OS", "remove tree"));
     }
 
+    @Test
+    public void retrieveInformationRegulationCase() throws Exception {
+        HashMap<String, String> expectedValue = new HashMap<String, String>();
+        expectedValue.put("regulationUrl", "https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT8HESA_CH8.52CITRTRPROR_8.52.070PRPRTRRELATRPRPEPP");
+        String sqlStml = "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString("procedure_url")).thenReturn("https://library.municode.com/ca/pasadena/codes/code_of_ordinances?nodeId=TIT8HESA_CH8.52CITRTRPROR_8.52.070PRPRTRRELATRPRPEPP");
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
+        assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveInformation("regulation", "remove", "tree", "OS"));
+    }
+
+    @Test
+    public void retrieveInformationDefaultCase() throws Exception {
+        assertEquals(null, new ProcessRequest(dbConnection).retrieveInformation("default", "remove", "tree", "OS"));
+    }
 
     @Test
     public void retrieveDevelopmentStandardsInfoTest() throws Exception {
@@ -121,5 +137,28 @@ public class ProcessRequestJUnitTest {
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
         assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveDevelopmentStandardsInfo("OS"));
+    }
+
+    @Test
+    public void retrieveZoneSymbolTest() throws Exception {
+        HashMap<String, String> expectedValue = new HashMap<String, String>();
+        expectedValue.put("zoneSymbol", "OS");
+        String sqlStml = "select z.zone_symbol from polygons p join zone z on p.zone_code = z.zone_symbol where p.POLYGON_ID = ?;";
+        when(resultSet.next()).thenReturn(true).thenReturn(false);
+        when(resultSet.getString("zone_symbol")).thenReturn("OS");
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
+        assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveZoneSymbol(71));
+    }
+
+    @Test
+    public void retrieveNoZoneSymbolTest() throws Exception {
+        HashMap<String, String> expectedValue = new HashMap<String, String>();
+        expectedValue.put("zoneSymbol", "None");
+        String sqlStml = "select z.zone_symbol from polygons p join zone z on p.zone_code = z.zone_symbol where p.POLYGON_ID = ?;";
+        when(resultSet.next()).thenReturn(false);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+        when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
+        assertEquals(expectedValue, new ProcessRequest(dbConnection).retrieveZoneSymbol(71));
     }
 }
