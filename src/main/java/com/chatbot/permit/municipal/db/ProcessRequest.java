@@ -37,8 +37,9 @@ public class ProcessRequest {
       String zoneID) throws SQLException {
     HashMap<String, String> links;
     String permitDescription = action + " " + object;
+    String informationType = type != null ? type : "no type";
 
-    switch (type) {
+    switch (informationType) {
       case "permit":
         links = (HashMap<String, String>) this.retrievePermitInfo(zoneID, permitDescription);
         break;

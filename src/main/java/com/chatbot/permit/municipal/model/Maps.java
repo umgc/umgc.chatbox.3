@@ -16,6 +16,8 @@ public class Maps {
   int LAT_CORD;
   int LON_CORD;
 
+  public Maps() {}
+
   public Maps(int FK_POLYGON_ID, double LAT, double LON, int LAT_CORD, int LON_CORD) {
     this.setFKPOLYGONID(FK_POLYGON_ID);
     this.setLAT(LAT);
