@@ -79,7 +79,8 @@ public class AddressVerification {
   public int verifyAddress(String street1) {
     int polygonZoneID;
 
-    LinkedHashMap<String, Object> addressInfo = (LinkedHashMap<String, Object>) getAddressInfo(street1);
+    LinkedHashMap<String, Object> addressInfo =
+        (LinkedHashMap<String, Object>) getAddressInfo(street1);
 
     if (addressInfo == null
         || !(verifyMapQuestResult((String) addressInfo.get("geocodeQualityCode")))) {

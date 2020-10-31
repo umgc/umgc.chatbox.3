@@ -47,7 +47,8 @@ public class MainController {
   @PostMapping(value = "/umgcchatbot", consumes = "application/json", produces = "application/json")
   public JSONObject main(@RequestBody WatsonArguments watsonArguments) throws Exception {
     JSONObject response = new JSONObject();
-    String webhookType = watsonArguments.getWebhookType() != null ? watsonArguments.getWebhookType() : "no webhook type";
+    String webhookType = watsonArguments.getWebhookType() != null ? watsonArguments.getWebhookType()
+        : "no webhook type";
     int zoneId = watsonArguments.getZoneID();
 
     // zoneID is 0 if Watson doesn't include it in the request

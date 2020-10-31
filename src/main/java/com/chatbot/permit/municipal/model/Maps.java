@@ -53,6 +53,7 @@ public class Maps {
   public void setLON_CORD(int LON_CORD) {
     this.LON_CORD = LON_CORD;
   }
+
   public boolean equals(Object m) {
     if (m != null && getClass() == m.getClass()) {
       Maps maps = (Maps) m;

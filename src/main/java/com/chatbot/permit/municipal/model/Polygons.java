@@ -28,6 +28,7 @@ public class Polygons {
   public int getPOLYGON_ID() {
     return this.POLYGON_ID;
   }
+
   public void setPOLYGON_ID(int POLYGON_ID) {
     this.POLYGON_ID = POLYGON_ID;
   }
