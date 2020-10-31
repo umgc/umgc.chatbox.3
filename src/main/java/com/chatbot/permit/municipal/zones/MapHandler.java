@@ -40,7 +40,7 @@ public class MapHandler {
   public MapHandler() {
     try {
       this.mapZones = this.convertAllZonesToPolygon();
-    } catch (SQLException e) {
+    } catch (Exception e) {
       logger.error(LOGGER_CONTENT, e);
     }
     // this.parseKML(); //uncomment this to import file on start
@@ -51,7 +51,7 @@ public class MapHandler {
     this.mapsRepository = mapsRepository;
     try {
       this.mapZones = this.convertAllZonesToPolygon();
-    } catch (SQLException e) {
+    } catch (Exception e) {
       logger.error(LOGGER_CONTENT, e);
     }
     // this.parseKML(); //uncomment this to import file on start
