@@ -39,12 +39,14 @@ public class MainController {
   private String userName;
   @Value("${spring.datasource.password}")
   private String password;
+
   private MapHandler mapHandler;
 
   @PostConstruct
   public void initMapHandler() {
     this.mapHandler = new MapHandler(polygonsRepository, mapsRepository);
   }
+
 
   @RequestMapping(value = "/umgcchatbot", method = RequestMethod.POST,
       consumes = "application/json", produces = "application/json")
@@ -58,6 +60,7 @@ public class MainController {
           new AddressVerification(city, state, mapQuestApiKey, mapHandler, parsingService);
       zoneId = addressVerification.verifyAddress(watsonArguments.getStreet1());
     }
+
 
     switch (watsonArguments.getWebhookType()) {
       case "verifyAddress":
@@ -87,6 +90,7 @@ public class MainController {
         break;
       default:
         response.put("error", "Missing required webhookType parameter");
+
     }
 
     return response;
