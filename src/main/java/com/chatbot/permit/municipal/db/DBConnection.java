@@ -1,11 +1,11 @@
 package com.chatbot.permit.municipal.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  *
@@ -17,31 +17,30 @@ import org.springframework.stereotype.Component;
  * connection to the mySQL database
  */
 
-@Component
 public class DBConnection {
 
-  @Value("${spring.datasource.url}")
-  private static String host;
+  private Connection conn;
+  Logger logger = LoggerFactory.getLogger(DBConnection.class);
 
-  @Value("${spring.datasource.username}")
-  private static String userName;
-
-  @Value("${spring.datasource.password}")
-  private static String password;
-
-  @Autowired
-  protected static Connection Connect() {
-    try {
-
-      Connection conn = DriverManager.getConnection(host, userName, password);
-      return conn;
-
-    } catch (SQLException err) {
-
-      System.out.println(err.getMessage());
-
-    }
-    return null;
+  public DBConnection(String host, String userName, String password) {
+    this.connect(host, userName, password);
   }
 
+  public void connect(String host, String userName, String password) {
+    try {
+
+      this.conn = DriverManager.getConnection(host, userName, password);
+
+    } catch (SQLException err) {
+      logger.error("context", err);
+    }
+  }
+
+  public Connection getConn() {
+    return conn;
+  }
+
+  public void setConn(Connection conn) {
+    this.conn = conn;
+  }
 }

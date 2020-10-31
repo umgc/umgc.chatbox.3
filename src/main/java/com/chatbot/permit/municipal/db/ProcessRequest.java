@@ -5,38 +5,74 @@ package com.chatbot.permit.municipal.db;
  */
 
 
-import java.sql.Connection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Map;
 
 /**
  *
  * @author bfetterman
  */
-@Component
 public class ProcessRequest {
 
+  private DBConnection dbConnection;
+  Logger logger = LoggerFactory.getLogger(ProcessRequest.class);
+  private static final String loggerContext = "context";
+
+  public ProcessRequest(String host, String userName, String password) {
+    this.dbConnection = new DBConnection(host, userName, password);
+  }
+
+  public ProcessRequest(DBConnection dbConnection) {
+    // connection for unit tests
+    this.dbConnection = dbConnection;
+  }
+
+  public Map<String, String> retrieveInformation(String type, String action, String object,
+      String zoneID) throws SQLException {
+    HashMap<String, String> links;
+    String permitDescription = action + " " + object;
+
+    switch (type) {
+      case "permit":
+        links = (HashMap<String, String>) this.retrievePermitInfo(zoneID, permitDescription);
+        break;
+      case "regulation":
+        links = (HashMap<String, String>) this.retrieveRegulationInfo(zoneID, permitDescription);
+        break;
+      default:
+        links = null;
+    }
+
+    return links;
+  }
+
   /**
-   * 
+   *
    * @param zoneID should be given to the method by Watson
    * @param permitDescription should be given to the method by Watson
-   * @param return is the Permit application URL stored in the DB
+   * @return is the Permit application URL stored in the DB
    */
 
-  @Autowired
-  public String retrievePermitInfo(String zoneID, String permitDescription) {
+  public Map<String, String> retrievePermitInfo(String zoneID, String permitDescription)
+      throws SQLException {
 
+    HashMap<String, String> appUrlHashMap = new HashMap<>();
     String applicationUrl = "No permit information found.";
+    PreparedStatement pst = null;
 
     try {
       String sql =
-          "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
-              + permitDescription + "' and (alu.zone_id='" + zoneID + "' or alu.zone_id='ALL')";
-      Connection conn = DBConnection.Connect();
-      PreparedStatement pst = conn.prepareStatement(sql);
+          "select alu.application_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
+      pst = this.dbConnection.getConn().prepareStatement(sql);
+      pst.setString(1, permitDescription);
+      pst.setString(2, zoneID);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -44,70 +80,81 @@ public class ProcessRequest {
       }
 
       pst.close();
-      conn.close();
+      this.dbConnection.getConn().close();
 
     } catch (Exception e) {
-
+      logger.error(loggerContext, e);
+    } finally {
+      if (pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
-    return applicationUrl;
+    appUrlHashMap.put("permitUrl", applicationUrl);
+    return appUrlHashMap;
 
   }
 
   /**
-   * 
+   *
    * @param zoneID should be given to the method by Watson
    * @param permitDescription should be given to the method by Watson
-   * @param return is the regulation application URL stored in the DB
+   * @return is the regulation application URL stored in the DB
    */
 
-  @Autowired
-  public String retrieveRegulationInfo(String zoneID, String permitDescription) {
+  public Map<String, String> retrieveRegulationInfo(String zoneID, String permitDescription)
+      throws SQLException {
 
+    HashMap<String, String> procedureUrlHashMap = new HashMap<>();
     String procedureUrl = "No regulation information found.";
+    PreparedStatement pst = null;
 
     try {
       String sql =
-          "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description='"
-              + permitDescription + "' and (alu.zone_id='" + zoneID + "' or alu.zone_id='ALL')";
-      Connection conn = DBConnection.Connect();
-      PreparedStatement pst = conn.prepareStatement(sql);
+          "select alu.procedure_url from allowed_land_use alu join zone_land_use zlu on zlu.id = alu.zone_land_use_id where zlu.description= ? and (alu.zone_id= ? or alu.zone_id='ALL')";
+      pst = this.dbConnection.getConn().prepareStatement(sql);
+      pst.setString(1, permitDescription);
+      pst.setString(2, zoneID);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
         procedureUrl = rs.getString("procedure_url");
       }
-
-      pst.close();
-      conn.close();
-
     } catch (Exception e) {
-
+      logger.error(loggerContext, e);
+    } finally {
+      if (pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
-    return procedureUrl;
+    procedureUrlHashMap.put("regulationUrl", procedureUrl);
+    return procedureUrlHashMap;
 
   }
 
   /**
-   * 
+   *
    * @param zoneID should be given to the method by Watson
    * @return returns various development standard URLs associated with the zoneID
    */
 
-  @Autowired
-  public HashMap retrieveDevelopmentStandardsInfo(String zoneID) {
+  public Map<String, String> retrieveDevelopmentStandardsInfo(String zoneID) throws SQLException {
 
     HashMap<String, String> standards = new HashMap<>();
+    String noDevelopmentStandards = "No development standards were found.";
     String generalStandardURL = null;
     String additionalStandardURL = null;
     String gardenStandardURL = null;
     String frontageandFacadesStandardsURL = null;
+    PreparedStatement pst = null;
 
     try {
-      String sql = "select * from development_standards ds where ds.zone_id='" + zoneID + "')";
-      Connection conn = DBConnection.Connect();
-      PreparedStatement pst = conn.prepareStatement(sql);
+      String sql = "select * from development_standards ds where ds.zone_id= ?";
+      pst = this.dbConnection.getConn().prepareStatement(sql);
+      pst.setString(1, zoneID);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
@@ -138,31 +185,32 @@ public class ProcessRequest {
         }
 
         standards.put("frontageandFacadesStandardsURL", frontageandFacadesStandardsURL);
-
       }
-
-      pst.close();
-      conn.close();
-
     } catch (Exception e) {
-
+      logger.error(loggerContext, e);
+    } finally {
+      if (pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
     if (standards.isEmpty()) {
-      standards.put("generalStandardURL", "No development standards were found.");
-      standards.put("additionalStandardURL", "No development standards were found.");
-      standards.put("gardenStandardURL", "No development standards were found.");
-      standards.put("frontageandFacadesStandardsURL", "No development standards were found.");
+      standards.put("generalStandardURL", noDevelopmentStandards);
+      standards.put("additionalStandardURL", noDevelopmentStandards);
+      standards.put("gardenStandardURL", noDevelopmentStandards);
+      standards.put("frontageandFacadesStandardsURL", noDevelopmentStandards);
     }
 
     return standards;
 
   }
 
-  @Autowired
-  public String retrieveZoneSymbol(String polygonID) {
+  public Map<String, String> retrieveZoneSymbol(int polygonID) throws SQLException {
 
     String zoneSymbol = "None";
+    PreparedStatement pst = null;
+    HashMap<String, String> zoneSymbolHashMap = new HashMap<>();
 
     try {
       String sql = "select distinct p.ZONE_CODE from polygons p join maps m on p.POLYGON_ID = m.FK_POLYGON_ID where p.POLYGON_ID='" + polygonID + "'";
@@ -175,14 +223,17 @@ public class ProcessRequest {
       }
 
       pst.close();
-      conn.close();
     } catch (Exception e) {
-
+      logger.error(loggerContext, e);
+    } finally {
+      if (pst != null) {
+        pst.close();
+      }
+      this.dbConnection.getConn().close();
     }
 
-    return zoneSymbol;
+    zoneSymbolHashMap.put("zoneSymbol", zoneSymbol);
+
+    return zoneSymbolHashMap;
   }
-
-
-
 }
