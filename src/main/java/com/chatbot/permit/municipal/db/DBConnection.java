@@ -13,8 +13,8 @@ import java.sql.SQLException;
  */
 
 /**
- * This class makes use of the application.properties file and the @value annotation to create a
- * connection to the mySQL database
+ * This class makes use of the application.properties file and the @value
+ * annotation to create a connection to the mySQL database
  */
 
 public class DBConnection {
