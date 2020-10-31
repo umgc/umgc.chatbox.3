@@ -8,6 +8,8 @@ import com.chatbot.permit.municipal.model.Maps;
 import com.chatbot.permit.municipal.model.Polygons;
 import com.chatbot.permit.municipal.repository.MapsRepository;
 import com.chatbot.permit.municipal.repository.PolygonsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,24 +25,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
-
 /**
  *
  * @author bmurray
  */
 public class MapHandler {
-  private static List<ZonePolygon> mapZones;
+  private List<ZonePolygon> mapZones;
 
   PolygonsRepository polygonsRepository;
   MapsRepository mapsRepository;
+  Logger logger = LoggerFactory.getLogger(MapHandler.class);
+  private static final String LOGGER_CONTENT = "context";
 
   public MapHandler() {
     try {
       this.mapZones = this.convertAllZonesToPolygon();
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.error(LOGGER_CONTENT, e);
     }
     // this.parseKML(); //uncomment this to import file on start
   }
@@ -51,8 +52,7 @@ public class MapHandler {
     try {
       this.mapZones = this.convertAllZonesToPolygon();
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.error(LOGGER_CONTENT, e);
     }
     // this.parseKML(); //uncomment this to import file on start
   }
@@ -105,7 +105,6 @@ public class MapHandler {
                   int second = lineIn.indexOf(',', (first + 1));
                   String tempLat = lineIn.substring(0, first);
                   String tempLon = lineIn.substring((first + 1), second);
-                  String tempz = lineIn.substring((second + 1));
                   addZoneCord(temp, tempLat, tempLon);
                 }
               }
@@ -113,18 +112,13 @@ public class MapHandler {
           }
         }
       }
-
-      // File inputFile = new File("input.txt");
-
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(LOGGER_CONTENT, e);
     } finally {
       if (input == null) {
         input.close();
       }
     }
-
-
   }
 
   /**
@@ -153,9 +147,8 @@ public class MapHandler {
         }
         index1++;
       }
-    } catch (Exception exc) {
-      System.out.println(exc.getMessage());
-
+    } catch (Exception e) {
+      logger.error(LOGGER_CONTENT, e);
     }
     return -1;// returns negative one if no zone is found.
   }
@@ -163,12 +156,12 @@ public class MapHandler {
   /**
    * This function takes in the variables need to add the a zone to a database.
    * 
-   * @param uniq_Zone_id
+   * @param uniqZoneid
    * @param zone
    * @throws Exception
    */
-  public void addZone(int uniq_Zone_id, String zone) throws Exception {
-    polygonsRepository.save(new Polygons(uniq_Zone_id, zone, zone));
+  public void addZone(int uniqZoneid, String zone) {
+    polygonsRepository.save(new Polygons(uniqZoneid, zone, zone));
   }
 
   /**
@@ -194,11 +187,11 @@ public class MapHandler {
    * @return Custom class ZonePolygon object.
    * @throws SQLException
    */
-  public ZonePolygon convertZoneToPolygon(int zoneID) throws SQLException {
+  public ZonePolygon convertZoneToPolygon(int zoneID) {
 
     ZonePolygon tempZone = new ZonePolygon();
     List<Maps> maps = mapsRepository.findByFKPOLYGONID(zoneID);
-    if (maps.size() > 0) {
+    if (!maps.isEmpty()) {
       tempZone.setZoneID(zoneID);
       for (Maps map : maps) {
         tempZone.addPoint((int) map.getLAT_CORD(), (int) map.getLON_CORD());
@@ -233,7 +226,7 @@ public class MapHandler {
    * @return string value of zone code
    * @throws SQLException
    */
-  public String getZoneCodeForID(int zoneID) throws SQLException {
+  public String getZoneCodeForID(int zoneID) {
     Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_CODE();
@@ -249,7 +242,7 @@ public class MapHandler {
    * @return string value of zone code Will return NULL if no value found
    * @throws SQLException
    */
-  public String getZoneCode2ForID(int zoneID) throws SQLException {
+  public String getZoneCode2ForID(int zoneID) {
     Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_CODE_2();
@@ -265,7 +258,7 @@ public class MapHandler {
    * @return string value of zone code Will return NULL if no value found
    * @throws SQLException
    */
-  public String getZoneCode3ForID(int zoneID) throws SQLException {
+  public String getZoneCode3ForID(int zoneID) {
     Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_CODE_3();
@@ -281,7 +274,7 @@ public class MapHandler {
    * @return string value of zone note Will return NULL if no value found
    * @throws SQLException
    */
-  public String getZoneNoteForID(int zoneID) throws SQLException {
+  public String getZoneNoteForID(int zoneID) {
     Polygons potentialPolygons = polygonsRepository.findById(zoneID).orElse(null);
     if (potentialPolygons != null) {
       return potentialPolygons.getZONE_NOTE();

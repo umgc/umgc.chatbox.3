@@ -5,6 +5,7 @@ import com.chatbot.permit.municipal.zones.MapHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class AddressVerification {
 
@@ -29,7 +30,7 @@ public class AddressVerification {
    *
    * @return
    */
-  public LinkedHashMap<String, Object> getAddressInfo(String street1) {
+  public Map<String, Object> getAddressInfo(String street1) {
     String mapquestUrl =
         MAPQUEST_BASE_URL + apiKey + "&location=" + street1 + ", " + city + ", " + state;
     LinkedHashMap<String, Object> addressInfo;
@@ -77,9 +78,8 @@ public class AddressVerification {
 
   public int verifyAddress(String street1) {
     int polygonZoneID;
-    LinkedHashMap<String, Integer> zoneID = new LinkedHashMap<String, Integer>();
 
-    LinkedHashMap<String, Object> addressInfo = getAddressInfo(street1);
+    LinkedHashMap<String, Object> addressInfo = (LinkedHashMap<String, Object>) getAddressInfo(street1);
 
     if (addressInfo == null
         || !(verifyMapQuestResult((String) addressInfo.get("geocodeQualityCode")))) {

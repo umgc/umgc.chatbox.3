@@ -102,7 +102,7 @@ class AddressVerificationTest {
 
     AddressVerification av =
         new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
-    LinkedHashMap<String, Object> result = av.getAddressInfo(street1);
+    LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) av.getAddressInfo(street1);
 
     assertEquals(addressInfo, result);
   }
@@ -114,7 +114,7 @@ class AddressVerificationTest {
 
     AddressVerification av =
         new AddressVerification(CITY, STATE, API_KEY, mapHandler, jsonParsingService);
-    LinkedHashMap<String, Object> result = av.getAddressInfo(street1);
+    LinkedHashMap<String, Object> result = (LinkedHashMap<String, Object>) av.getAddressInfo(street1);
 
     assertEquals(null, result);
   }

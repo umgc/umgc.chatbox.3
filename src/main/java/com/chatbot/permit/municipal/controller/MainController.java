@@ -10,10 +10,7 @@ import com.chatbot.permit.municipal.zones.MapHandler;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 
@@ -46,8 +43,7 @@ public class MainController {
     this.mapHandler = new MapHandler(polygonsRepository, mapsRepository);
   }
 
-  @RequestMapping(value = "/umgcchatbot", method = RequestMethod.POST,
-      consumes = "application/json", produces = "application/json")
+  @PostMapping(value = "/umgcchatbot", consumes = "application/json", produces = "application/json")
   public JSONObject main(@RequestBody WatsonArguments watsonArguments) throws Exception {
     JSONObject response = new JSONObject();
     int zoneId = watsonArguments.getZoneID();
