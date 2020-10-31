@@ -36,6 +36,7 @@ public class MainController {
   private String userName;
   @Value("${spring.datasource.password}")
   private String password;
+
   private MapHandler mapHandler;
 
   @PostConstruct
@@ -84,6 +85,7 @@ public class MainController {
         break;
       default:
         response.put("error", "Missing required webhookType parameter");
+
     }
 
     return response;

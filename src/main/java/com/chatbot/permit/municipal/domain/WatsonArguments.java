@@ -8,6 +8,7 @@ public class WatsonArguments {
     private String type;
     private int zoneID;
 
+
     public String getStreet1() {
         return street1;
     }
