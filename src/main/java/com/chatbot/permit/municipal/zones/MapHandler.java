@@ -115,7 +115,7 @@ public class MapHandler {
     } catch (Exception e) {
       logger.error(LOGGER_CONTENT, e);
     } finally {
-      if (input == null) {
+      if (input != null) {
         input.close();
       }
     }
@@ -207,7 +207,7 @@ public class MapHandler {
    * @return List of custom class ZonePolygons.
    * @throws SQLException
    */
-  public List<ZonePolygon> convertAllZonesToPolygon() throws SQLException {
+  public List<ZonePolygon> convertAllZonesToPolygon() {
 
     List<ZonePolygon> list = new ArrayList<>();
     List<Integer> fkPolygonIds = mapsRepository.findMapsDistinctBy();
