@@ -213,14 +213,13 @@ public class ProcessRequest {
     HashMap<String, String> zoneSymbolHashMap = new HashMap<>();
 
     try {
-      String sql =
-          "select z.zone_symbol from polygons p join zone z on p.zone_code = z.zone_symbol where p.POLYGON_ID = ?;";
-      pst = this.dbConnection.getConn().prepareStatement(sql);
-      pst.setString(1, String.valueOf(polygonID));
+      String sql = "select distinct p.ZONE_CODE from polygons p join maps m on p.POLYGON_ID = m.FK_POLYGON_ID where p.POLYGON_ID='" + polygonID + "'";
+      Connection conn = DBConnection.Connect();
+      PreparedStatement pst = conn.prepareStatement(sql);
       ResultSet rs = pst.executeQuery();
 
       while (rs.next()) {
-        zoneSymbol = rs.getString("zone_symbol");
+        zoneSymbol = rs.getString("ZONE_CODE");
       }
 
       pst.close();
