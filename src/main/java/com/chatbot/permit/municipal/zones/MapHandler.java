@@ -65,6 +65,8 @@ public class MapHandler {
    * @throws Exception
    */
   public void parseKML() throws Exception {
+    Scanner input = null;
+
     try {
 
       final JFileChooser fc = new JFileChooser();
@@ -94,7 +96,7 @@ public class MapHandler {
               addZone(temp, ZoneName);
 
               // Scan input for Cordniates in zone and store in table
-              Scanner input = new Scanner(
+              input = new Scanner(
                   eElement.getElementsByTagName("coordinates").item(0).getTextContent());
               while (input.hasNextLine()) {
                 String lineIn = input.nextLine().trim();
@@ -116,6 +118,10 @@ public class MapHandler {
 
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      if (input == null) {
+        input.close();
+      }
     }
 
 

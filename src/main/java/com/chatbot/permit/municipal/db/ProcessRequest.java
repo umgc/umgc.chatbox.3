@@ -22,7 +22,7 @@ public class ProcessRequest {
 
   private DBConnection dbConnection;
   Logger logger = LoggerFactory.getLogger(ProcessRequest.class);
-  private static final String loggerContext = "context";
+  private static final String LOGGER_CONTENT = "context";
 
   public ProcessRequest(String host, String userName, String password) {
     this.dbConnection = new DBConnection(host, userName, password);
@@ -35,7 +35,6 @@ public class ProcessRequest {
 
   public Map<String, String> retrieveInformation(String type, String action, String object,
       String zoneID) throws SQLException {
-    System.out.println(type + " " + action + " " + object + " " + zoneID);
     HashMap<String, String> links;
     String permitDescription = action + " " + object;
 
@@ -83,7 +82,7 @@ public class ProcessRequest {
       this.dbConnection.getConn().close();
 
     } catch (Exception e) {
-      logger.error(loggerContext, e);
+      logger.error(LOGGER_CONTENT, e);
     } finally {
       if (pst != null) {
         pst.close();
@@ -122,7 +121,7 @@ public class ProcessRequest {
         procedureUrl = rs.getString("procedure_url");
       }
     } catch (Exception e) {
-      logger.error(loggerContext, e);
+      logger.error(LOGGER_CONTENT, e);
     } finally {
       if (pst != null) {
         pst.close();
@@ -187,7 +186,7 @@ public class ProcessRequest {
         standards.put("frontageandFacadesStandardsURL", frontageandFacadesStandardsURL);
       }
     } catch (Exception e) {
-      logger.error(loggerContext, e);
+      logger.error(LOGGER_CONTENT, e);
     } finally {
       if (pst != null) {
         pst.close();
@@ -225,7 +224,7 @@ public class ProcessRequest {
 
       pst.close();
     } catch (Exception e) {
-      logger.error(loggerContext, e);
+      logger.error(LOGGER_CONTENT, e);
     } finally {
       if (pst != null) {
         pst.close();

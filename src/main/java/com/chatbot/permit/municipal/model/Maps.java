@@ -11,8 +11,8 @@ public class Maps {
   private int ID;
   @Column(name = "FK_POLYGON_ID")
   private int FKPOLYGONID;
-  private double LAT;
-  private double LON;
+  double LAT;
+  double LON;
   int LAT_CORD;
   int LON_CORD;
 
@@ -57,6 +57,10 @@ public class Maps {
       return this.getID() == maps.getID();
     }
     return false;
+  }
+
+  public int hashCode() {
+    return this.hashCode();
   }
 
   public int getID() {

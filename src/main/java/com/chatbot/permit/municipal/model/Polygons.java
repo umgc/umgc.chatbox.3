@@ -67,4 +67,8 @@ public class Polygons {
     }
     return false;
   }
+
+  public int hashCode() {
+    return this.hashCode();
+  }
 }
