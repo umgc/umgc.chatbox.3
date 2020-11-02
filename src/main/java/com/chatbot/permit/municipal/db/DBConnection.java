@@ -13,8 +13,8 @@ import java.sql.SQLException;
  */
 
 /**
- * This class makes use of the application.properties file and the @value
- * annotation to create a connection to the mySQL database
+ * This class makes use of the application.properties file and the @value annotation to create a
+ * connection to the mySQL database
  */
 
 public class DBConnection {
@@ -28,9 +28,7 @@ public class DBConnection {
 
   public void connect(String host, String userName, String password) {
     try {
-
       this.conn = DriverManager.getConnection(host, userName, password);
-
     } catch (SQLException err) {
       logger.error("context", err);
     }

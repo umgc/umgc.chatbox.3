@@ -70,7 +70,7 @@ target/$(MUNICIPALPERMITCHABOT_JAR):
 ##############################################################
 image: target/$(MUNICIPALPERMITCHABOT_JAR)
 	cp target/$(MUNICIPALPERMITCHABOT_JAR) ./$(MUNICIPALPERMITCHABOT_JAR)
-	docker build -f ./docker/Dockerfile $(BUILD_ARGS) -t $(APP_IMG) .
+	docker build --no-cache -f ./docker/Dockerfile $(BUILD_ARGS) -t $(APP_IMG) .
 	rm -rf ./$(MUNICIPALPERMITCHABOT_JAR)
 
 sonar:

@@ -11,8 +11,8 @@ public class Maps {
   private int ID;
   @Column(name = "FK_POLYGON_ID")
   private int FKPOLYGONID;
-  private double LAT;
-  private double LON;
+  double LAT;
+  double LON;
   int LAT_CORD;
   int LON_CORD;
 
@@ -26,32 +26,12 @@ public class Maps {
     this.setLON_CORD(LON_CORD);
   }
 
-  public int getID() {
-    return ID;
-  }
-
-  public void setID(int ID) {
-    this.ID = ID;
-  }
-
-  public int getFKPOLYGONID() {
-    return FKPOLYGONID;
-  }
-
   public void setFKPOLYGONID(int FKPOLYGONID) {
     this.FKPOLYGONID = FKPOLYGONID;
   }
 
-  public double getLAT() {
-    return LAT;
-  }
-
   public void setLAT(double LAT) {
     this.LAT = LAT;
-  }
-
-  public double getLON() {
-    return LON;
   }
 
   public void setLON(double LON) {
@@ -72,5 +52,21 @@ public class Maps {
 
   public void setLON_CORD(int LON_CORD) {
     this.LON_CORD = LON_CORD;
+  }
+
+  public boolean equals(Object m) {
+    if (m != null && getClass() == m.getClass()) {
+      Maps maps = (Maps) m;
+      return this.getID() == maps.getID();
+    }
+    return false;
+  }
+
+  public int hashCode() {
+    return this.hashCode();
+  }
+
+  public int getID() {
+    return ID;
   }
 }

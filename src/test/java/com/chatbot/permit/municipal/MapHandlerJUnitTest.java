@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  *
@@ -196,6 +196,19 @@ public class MapHandlerJUnitTest {
         new MapHandler(mockPolygonsRepository, mockMapsRepository).getZoneNoteForID(315));
     assertEquals(null,
         new MapHandler(mockPolygonsRepository, mockMapsRepository).getZoneNoteForID(-1));
+  }
 
+  @Test
+  public void addZoneTest() throws Exception {
+    MapHandler mh = new MapHandler(mockPolygonsRepository, mockMapsRepository);
+    mh.addZone(1, "OS");
+    verify(mockPolygonsRepository, times(1)).save(new Polygons(1, "OS", "OS"));
+  }
+
+  @Test
+  public void addZoneCordTest() throws Exception {
+    MapHandler mh = new MapHandler(mockPolygonsRepository, mockMapsRepository);
+    mh.addZoneCord(1, "118.5", "34.5");
+    verify(mockMapsRepository, times(1)).save(new Maps(1, 118.5, 34.5, 118500000, 34500000));
   }
 }

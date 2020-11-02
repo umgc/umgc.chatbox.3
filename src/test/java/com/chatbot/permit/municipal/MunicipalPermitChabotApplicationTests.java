@@ -3,7 +3,6 @@ package com.chatbot.permit.municipal;
 import com.chatbot.permit.municipal.controller.MainController;
 import com.chatbot.permit.municipal.model.Maps;
 import com.chatbot.permit.municipal.model.Polygons;
-import com.chatbot.permit.municipal.repository.DevelopmentStandardsRepository;
 import com.chatbot.permit.municipal.repository.MapsRepository;
 import com.chatbot.permit.municipal.repository.PolygonsRepository;
 import com.chatbot.permit.municipal.service.JsonParsingService;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,8 +46,6 @@ class MunicipalPermitChabotApplicationTests {
   private MainController mainController;
   @Autowired
   private MockMvc mockMvc;
-  @Mock
-  private DevelopmentStandardsRepository developmentStandardsRepository;
 
   @BeforeEach
   public void setUp() {

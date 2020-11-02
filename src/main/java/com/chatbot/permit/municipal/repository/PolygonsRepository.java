@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PolygonsRepository extends JpaRepository<Polygons, Integer> {
-    @Query("SELECT ZONE_CODE FROM Polygons WHERE POLYGON_ID = ?1")
-    public String findZONECODEByPOLYGONID(int id);
+  @Query("SELECT ZONE_CODE FROM Polygons WHERE POLYGON_ID = ?1")
+  public String findZONECODEByPOLYGONID(int id);
 }
