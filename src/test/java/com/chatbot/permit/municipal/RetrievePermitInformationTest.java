@@ -129,9 +129,9 @@ public class RetrievePermitInformationTest {
 
         // zone symbol test
         sqlStml =
-                "select z.zone_symbol from polygons p join zone z on p.zone_code = z.zone_symbol where p.POLYGON_ID = ?;";
+                "select distinct p.ZONE_CODE from polygons p join maps m on p.POLYGON_ID = m.FK_POLYGON_ID where p.POLYGON_ID='71'";
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getString("zone_symbol")).thenReturn("OS");
+        when(resultSet.getString("ZONE_CODE")).thenReturn("OS");
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(connection.prepareStatement(sqlStml)).thenReturn(preparedStatement);
 
