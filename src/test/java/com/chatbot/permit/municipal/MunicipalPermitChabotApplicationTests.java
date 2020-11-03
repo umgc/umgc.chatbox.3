@@ -3,7 +3,6 @@ package com.chatbot.permit.municipal;
 import com.chatbot.permit.municipal.controller.MainController;
 import com.chatbot.permit.municipal.model.Maps;
 import com.chatbot.permit.municipal.model.Polygons;
-import com.chatbot.permit.municipal.repository.DevelopmentStandardsRepository;
 import com.chatbot.permit.municipal.repository.MapsRepository;
 import com.chatbot.permit.municipal.repository.PolygonsRepository;
 import com.chatbot.permit.municipal.service.JsonParsingService;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,8 +46,6 @@ class MunicipalPermitChabotApplicationTests {
   private MainController mainController;
   @Autowired
   private MockMvc mockMvc;
-  @Mock
-  private DevelopmentStandardsRepository developmentStandardsRepository;
 
   @BeforeEach
   public void setUp() {
@@ -97,9 +93,7 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(mapQuestResponse);
+    given(jsonParsingService.parse(anyString())).willReturn(mapQuestResponse);
 
     this.mockMvc
         .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
@@ -130,9 +124,7 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(mapQuestResponse);
+    given(jsonParsingService.parse(anyString())).willReturn(mapQuestResponse);
 
     this.mockMvc
         .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
@@ -163,9 +155,7 @@ class MunicipalPermitChabotApplicationTests {
     LinkedHashMap mapQuestResponse = new LinkedHashMap();
     mapQuestResponse.put("results", results);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(mapQuestResponse);
+    given(jsonParsingService.parse(anyString())).willReturn(mapQuestResponse);
 
     this.mockMvc
         .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
@@ -181,9 +171,7 @@ class MunicipalPermitChabotApplicationTests {
     ObjectMapper locationMapper = new ObjectMapper();
     String locationJson = locationMapper.writeValueAsString(location);
 
-    given(jsonParsingService
-            .parse(anyString()))
-            .willReturn(null);
+    given(jsonParsingService.parse(anyString())).willReturn(null);
 
     this.mockMvc
         .perform(post("/umgcchatbot").content(locationJson).contentType(MediaType.APPLICATION_JSON))
